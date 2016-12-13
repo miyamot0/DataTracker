@@ -596,8 +596,6 @@ namespace DataTracker.View
                 Array.Copy(tempFreqIntervalsMain, mCopyTempMainSchedule, tempFreqIntervalsMain.Length);
                 freqIntervalListMain.Add(mCopyTempMainSchedule);
 
-                Console.WriteLine("freq: " + string.Join("\t", mCopyTempMainSchedule));
-
                 // Individial Freq Count Arrays
                 if (freqSchedOneWasActive)
                 {
@@ -723,8 +721,6 @@ namespace DataTracker.View
 
                 double[] mCopyTempDurSchedule = new double[tempdurationIntervalsMain.Length];
                 Array.Copy(tempdurationIntervalsMain, mCopyTempDurSchedule, tempdurationIntervalsMain.Length);
-
-                Console.WriteLine("dur: " + string.Join("\t", tempdurationIntervalsMain));
 
                 durationIntervalListMain.Add(mCopyTempDurSchedule);
 
@@ -2402,8 +2398,6 @@ namespace DataTracker.View
                     mListItems[mListItems.Count - 1].KeyCode = mAdd.KeyCode;
                     mListItems[mListItems.Count - 1].TimePressed = mAdd.TimePressed;
                     mListItems[mListItems.Count - 1].ScheduleTag = mAdd.ScheduleTag;
-
-                    Console.WriteLine("Old Key: " + mListItems[mListItems.Count - 1].KeyCode.ToString() + " New Key: " + mKeyHold.ToString());
 
                     updateListAtIndex(mOldKeyHold, mKeyHold);
 

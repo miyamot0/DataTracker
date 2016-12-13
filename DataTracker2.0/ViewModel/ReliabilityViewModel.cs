@@ -511,7 +511,6 @@ namespace DataTracker.ViewModel
 
                             rowSpacer = rowSpacer + 6;
                         }
-
                     }
 
                     currentRowNumber = currentRowNumber + 1;
@@ -547,7 +546,6 @@ namespace DataTracker.ViewModel
                     Console.WriteLine(e.ToString());
                 }
             }
-
         }
 
         /// <summary>
