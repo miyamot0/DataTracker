@@ -17,6 +17,7 @@ Features include:
 ### Referenced Works (Packages)
 Fast Talker uses a number of open source projects to work properly:
 * [NPOI](http://npoi.codeplex.com/) - Apache License 2.0 - Copyright (c) 2016 Neuzilla
+* [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) - MIT Licensed. Copyright (c) 2000-2016 SharpZipLib Contributors
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) - MIT Licensed. Copyright (c) 2007 James Newton-King 
 * [gong-wpf-dragdrop](https://github.com/punker76/gong-wpf-dragdrop) - BSD Licensed (3-clause). Copyright (c) 2015-16, Jan Karger (Steven Kirk)
 
