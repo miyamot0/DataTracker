@@ -22,14 +22,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataTracker"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"                      
         mc:Ignorable="d"
         Title="Reliability"         
         Height="500" 
         Width="600" 
         BorderThickness="0" 
         ResizeMode="NoResize"
-        Style="{DynamicResource BackgroundStyle}">
+        Style="{DynamicResource BackgroundStyle}"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <Style x:Key="HeaderStyleButton"
@@ -88,11 +88,13 @@
         <KeyBinding Gesture="Ctrl+E" Command="{Binding UnselectAll}" />
     </Window.InputBindings>
     
+    <!--
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding Initialize}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
+    -->
 
     <Grid>
         <Grid.RowDefinitions >

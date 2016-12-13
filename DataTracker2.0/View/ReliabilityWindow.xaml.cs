@@ -16,6 +16,7 @@
     along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 */
 
+using DataTracker.ViewModel;
 using System.Windows;
 
 namespace DataTracker.View
@@ -28,6 +29,16 @@ namespace DataTracker.View
         public ReliabilityWindow()
         {
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var viewModel = (ReliabilityViewModel)DataContext;
+
+            if (viewModel.Initialize.CanExecute(null))
+            {
+                viewModel.Initialize.Execute(null);
+            }
         }
     }
 }
