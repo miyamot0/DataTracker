@@ -1,0 +1,883 @@
+﻿<Window x:Class="DataTracker.View.SessionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:DataTracker.View"
+        mc:Ignorable="d"
+        Title="Recording Session" 
+        Height="700" 
+        Width="800" 
+        ResizeMode="NoResize"
+        MinHeight="600" 
+        MinWidth="700" 
+        BorderThickness="0" 
+        Loaded="MetroWindow_Loaded"
+        KeyDown="Window_KeyDown">
+
+    <Window.Resources>
+
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Red" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Red" />
+
+        <!-- This storyboard will make the image grow to double its size in 0.2 seconds -->
+        <Storyboard x:Key="expandStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                             To="1.1" 
+                             Duration="0:0:0.2" />
+            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                             To="1.1" 
+                             Duration="0:0:0.2" />
+        </Storyboard>
+
+        <!-- This storyboard will make the image revert to its original size -->
+        <Storyboard x:Key="shrinkStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                             To="1" 
+                             Duration="0:0:0.2" />
+            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                             To="1" 
+                             Duration="0:0:0.2" />
+        </Storyboard>
+
+        <SolidColorBrush x:Key="LightGrayTextContrast">#747a79</SolidColorBrush>
+        <SolidColorBrush x:Key="DarkBlackBackground">#1c2120</SolidColorBrush>
+        <SolidColorBrush x:Key="DarkerBlackBackground">#111313</SolidColorBrush>
+
+        <Style TargetType="{x:Type GridViewColumnHeader}" x:Key="MyHeaderStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                        <Border BorderThickness="0,0,0,1" BorderBrush="Transparent" Background="Transparent">
+                            <TextBlock x:Name="ContentHeader" 
+                                       Text="{TemplateBinding Content}" 
+                                       Padding="5,5,5,0" 
+                                       Width="{TemplateBinding Width}" TextAlignment="Left" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Width" Value="Auto" />
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}" />
+        </Style>
+
+        <Style x:Key="GridViewColumnHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template" Value="{DynamicResource GridViewColumnHeaderControlTemplate1}"/>
+        </Style>
+
+        <ControlTemplate x:Key="GridViewColumnHeaderControlTemplate1" TargetType="{x:Type GridViewColumnHeader}">
+            <Grid SnapsToDevicePixels="True">
+                <Border x:Name="HeaderBorder" BorderBrush="Transparent" BorderThickness="0,1" Background="{TemplateBinding Background}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition MaxHeight="7"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Rectangle x:Name="UpperHighlight" Fill="#FFE3F7FF" Visibility="Collapsed"/>
+                        <Border Padding="{TemplateBinding Padding}" Grid.RowSpan="2">
+                            <ContentPresenter x:Name="HeaderContent" 
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                              Content="{TemplateBinding Content}" 
+                                              ContentStringFormat="{TemplateBinding ContentStringFormat}" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              Margin="0,0,0,0" 
+                                              RecognizesAccessKey="True" 
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+                <Border x:Name="HeaderHoverBorder" BorderThickness="0,0,0,0" Margin="0,0,0,0"/>
+                <Border x:Name="HeaderPressBorder" BorderThickness="0,0,0,0" Margin="0,0,0,0"/>
+                <Canvas>
+                    <Thumb x:Name="PART_HeaderGripper">
+                        <Thumb.Style>
+                            <Style TargetType="{x:Type Thumb}">
+                                <Setter Property="Canvas.Right" Value="-9"/>
+                                <Setter Property="Width" Value="18"/>
+                                <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Thumb}">
+                                            <Border Background="Transparent">
+                                                <Rectangle Fill="Transparent" HorizontalAlignment="Center" Width="0"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Thumb.Style>
+                    </Thumb>
+                </Canvas>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <!--
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" TargetName="HeaderBorder" Value="Transparent"/>
+                    <Setter Property="BorderBrush" TargetName="HeaderHoverBorder" Value="#FF88CBEB"/>
+                    <Setter Property="Visibility" TargetName="UpperHighlight" Value="Visible"/>
+                    <Setter Property="Background" TargetName="PART_HeaderGripper" Value="Transparent"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" TargetName="HeaderBorder" Value="Transparent"/>
+                    <Setter Property="BorderBrush" TargetName="HeaderHoverBorder" Value="Transparent"/>
+                    <Setter Property="BorderBrush" TargetName="HeaderPressBorder" Value="Transparent"/>
+                    <Setter Property="Visibility" TargetName="UpperHighlight" Value="Visible"/>
+                    <Setter Property="Fill" TargetName="UpperHighlight" Value="Transparent"/>
+                    <Setter Property="Visibility" TargetName="PART_HeaderGripper" Value="Hidden"/>
+                    <Setter Property="Margin" TargetName="HeaderContent" Value="0,0,0,0"/>
+                </Trigger>
+                -->
+                <Trigger Property="Height" Value="Auto">
+                    <Setter Property="MinHeight" Value="20"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="Transparent"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="BaseButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#cccccc"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="Chrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="true">
+                            <ContentPresenter Name="Presenter" Margin="{TemplateBinding Padding}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    RecognizesAccessKey="True"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="#333333" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#dddddd" />
+                                <Setter Property="BorderBrush" Value="#cccccc" />
+                                <Setter Property="Foreground" Value="#333333" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1ba1e2" />
+                                <Setter Property="BorderBrush" Value="#1ba1e2"/>
+                                <Setter Property="Foreground" Value="#ffffff"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#1ba1e2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard Storyboard="{StaticResource expandStoryboard}" />
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard Storyboard="{StaticResource shrinkStoryboard}" />
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="BaseTextTitleStyle" TargetType="{x:Type Label}">
+            <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}"/>
+            <Setter Property="FontSize" Value="22" />
+        </Style>
+
+        <Style x:Key="ListViewItemFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle StrokeThickness="1"
+                               RadiusX="2"
+                               RadiusY="2"
+                               Stroke="#8E6EA6F5"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <LinearGradientBrush x:Key="ListItemHoverFill"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+            <LinearGradientBrush.GradientStops>
+                <GradientStop Color="#FFF1FBFF"
+                          Offset="0"/>
+                <GradientStop Color="#FFD5F1FE"
+                          Offset="1"/>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="ListItemSelectedFill"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+            <LinearGradientBrush.GradientStops>
+                <GradientStop Color="#FFD9F4FF"
+                          Offset="0"/>
+                <GradientStop Color="#FF9BDDFB"
+                          Offset="1"/>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="ListItemSelectedHoverFill"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+            <LinearGradientBrush.GradientStops>
+                <GradientStop Color="#FFEAF9FF"
+                          Offset="0"/>
+                <GradientStop Color="#FFC9EDFD"
+                          Offset="1"/>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="ListItemSelectedInactiveFill"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+            <LinearGradientBrush.GradientStops>
+                <GradientStop Color="#FFEEEDED"
+                          Offset="0"/>
+                <GradientStop Color="#FFDDDDDD"
+                          Offset="1"/>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+    </Window.Resources>
+
+    <Grid ShowGridLines="False">
+
+        <Grid.RowDefinitions >
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.Background>
+            <DrawingBrush Viewport="0,0,16,16" ViewportUnits="Absolute" Stretch="None" TileMode="Tile" >
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="{DynamicResource DarkerBlackBackground}">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0,8,8"/>
+                                    <RectangleGeometry Rect="8,8,8,8"/>
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="{DynamicResource DarkBlackBackground}">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="8,0,8,8"/>
+                                    <RectangleGeometry Rect="0,8,8,8"/>
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+        </Grid.Background>
+
+        <Label Name="Title"                
+            Grid.Row="0"
+            Grid.Column="2" 
+            Grid.ColumnSpan="2"
+            Content="{Binding TitleText}" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center" 
+            VerticalContentAlignment="Center"
+            Background="Transparent"
+            Style="{DynamicResource BaseTextTitleStyle}"/>
+
+        <Button x:Name="replaceLast"
+                Content="Replace Last Key" 
+                HorizontalAlignment="Stretch" 
+                Margin="10,20,10,20" 
+                Visibility="Hidden"
+                IsEnabled="False"
+                VerticalAlignment="Stretch" 
+                Grid.Column="4" 
+                Grid.Row="0" 
+                Grid.ColumnSpan="1" 
+                Style="{DynamicResource BaseButtonStyle}" 
+                Click="Replace_Click"/>        
+        
+        <Button Content="Toggle Full Screen" 
+                HorizontalAlignment="Stretch" 
+                Margin="10,20,10,20" 
+                VerticalAlignment="Stretch" 
+                Grid.Column="5" 
+                Grid.Row="0" 
+                Grid.ColumnSpan="1" 
+                Style="{DynamicResource BaseButtonStyle}" 
+                Click="Button_Click"/>
+
+        <ListView Name="keyFrequency" 
+            Grid.Row="1" 
+            Grid.Column="0" 
+            Grid.ColumnSpan="3"              
+            Grid.RowSpan="5" 
+            Background="Transparent"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            KeyboardNavigation.TabNavigation="None" 
+            Margin="20,0,20,0"
+            BorderBrush="Transparent"
+            ItemsSource="{Binding AllFrequencies}"
+            DockPanel.Dock="Left">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}" />                    
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <Border
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        Background="{TemplateBinding Background}">
+                                    <GridViewRowPresenter HorizontalAlignment="Stretch" 
+                                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                                            Width="Auto" 
+                                                            Margin="0" 
+                                                            Content="{TemplateBinding Content}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                    <GridViewColumn Header="Key (Frequency)" 
+                            HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                            Width="100" 
+                            DisplayMemberBinding="{Binding KeyName}" />
+                    <GridViewColumn Header="Description " 
+                            HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                            Width="150" 
+                            DisplayMemberBinding="{Binding KeyDescription}" />
+                    <GridViewColumn Header="Count" 
+                            HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                            Width="100" 
+                            DisplayMemberBinding="{Binding Counts}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <ListView Name="keyDuration"
+                Grid.Row="1" 
+                Grid.Column="3" 
+                Grid.ColumnSpan="3"              
+                Grid.RowSpan="5" 
+                VerticalAlignment="Stretch"
+                VerticalContentAlignment="Top"
+                Background="Transparent"
+                KeyboardNavigation.TabNavigation="None"  
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                BorderBrush="Transparent" 
+                ItemsSource="{Binding AllDurations}"
+                Margin="20,0,20,0"
+                DockPanel.Dock="Right">
+            <ListView.Resources>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding isRunning}" Value="True">
+                            <Setter Property="Background" Value="Green" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="Focusable" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding isRunning}" Value="False">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Focusable" Value="False"/>
+                            <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+
+            </ListView.Resources>
+            <ListView.View>
+                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                    <GridViewColumn Header="Key (Duration)" 
+                                HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                                Width="100" 
+                                DisplayMemberBinding="{Binding KeyName}" />
+                    <GridViewColumn Header="Description " 
+                                HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                                Width="100" 
+                                DisplayMemberBinding="{Binding KeyDescription}" />
+                    <GridViewColumn Header="Rounds" 
+                                HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                                Width="100" 
+                                DisplayMemberBinding="{Binding Counts}"/>                    
+                    <GridViewColumn Header="Duration" 
+                                HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                                Width="100" 
+                                DisplayMemberBinding="{Binding CountString}"/>
+                </GridView>
+            </ListView.View>
+
+        </ListView>
+
+        <Label
+            Name="SessionParams00"
+            Grid.Row="6"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Content="Session Parameters"
+            Grid.RowSpan="1"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            VerticalAlignment="Stretch"          
+            VerticalContentAlignment="Center"          
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Grid.Row="7"
+            Grid.Column="0"
+            Grid.ColumnSpan="1"
+            Margin="25,0,0,0"
+            Name="groupLabel"
+            Content="Group Name:"
+            VerticalContentAlignment="Center"
+            Foreground="{StaticResource LightGrayTextContrast}" />
+
+        <Label
+            Grid.Row="8"
+            Grid.Column="0"
+            Grid.ColumnSpan="1"
+            Margin="25,0,0,0"
+            Name="indivLabel"
+            Content="Patient Name:"
+            VerticalContentAlignment="Center"
+            Foreground="{StaticResource LightGrayTextContrast}" />
+
+        <Label
+            Grid.Row="9"
+            Grid.Column="0"
+            Grid.ColumnSpan="1"
+            Margin="25,0,0,0"
+            Name="evalLabel"
+            Content="Evaluation:"
+            VerticalContentAlignment="Center"
+            Foreground="{StaticResource LightGrayTextContrast}" />
+
+        <Label
+            Grid.Row="10"
+            Grid.Column="0"
+            Grid.ColumnSpan="1"
+            Margin="25,0,0,0"
+            Name="condLabel"
+            Content="Condition:"
+            VerticalContentAlignment="Center"
+            Foreground="{StaticResource LightGrayTextContrast}" />
+
+        <Label
+            Grid.Row="11"
+            Grid.Column="0"
+            Grid.ColumnSpan="1"
+            Margin="25,0,0,0"
+            Name="collRoleLabel"             
+            Content="Collection:"          
+            VerticalContentAlignment="Center"                     
+            Foreground="{StaticResource LightGrayTextContrast}"  />
+
+        <!-- Border Elements -->
+        
+        <Border
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Grid.Row="7"
+            Margin="5"
+            BorderBrush="{StaticResource LightGrayTextContrast}"
+            BorderThickness="1">
+        </Border>
+        
+        <Border
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Grid.Row="8"
+            Margin="5"
+            BorderBrush="{StaticResource LightGrayTextContrast}"
+            BorderThickness="1">
+        </Border
+            >
+        <Border
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Grid.Row="9"
+            Margin="5"
+            BorderBrush="{StaticResource LightGrayTextContrast}"
+            BorderThickness="1">
+        </Border>
+        
+        <Border
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Grid.Row="10"
+            Margin="5"
+            BorderBrush="{StaticResource LightGrayTextContrast}"
+            BorderThickness="1">
+        </Border>
+        
+        <Border
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Grid.Row="11"
+            Margin="5"
+            BorderBrush="{StaticResource LightGrayTextContrast}"
+            BorderThickness="1">
+        </Border>
+        
+        <!-- Labels -->    
+            
+        <Label
+            Grid.Row="7"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            Grid.ColumnSpan="2"
+            Margin="10,0,0,0"
+            Name="groupLabelText"
+            Foreground="White"
+            VerticalContentAlignment="Center"
+            Content="Test Holder String"/>
+
+        <Label
+            Grid.Row="8"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            Grid.ColumnSpan="2"
+            Margin="10,0,0,0"
+            Name="indivLabelText"
+            Foreground="White"
+            VerticalContentAlignment="Center"
+            Content="Test Holder String"/>
+
+        <Label
+            Grid.Row="9"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            Grid.ColumnSpan="2"
+            Margin="10,0,0,0"
+            Name="evalLabelText"
+            Foreground="White"
+            VerticalContentAlignment="Center"
+            Content="Test Holder String"/>
+
+        <Label
+            Grid.Row="10"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            Grid.ColumnSpan="2"
+            Margin="10,0,0,0"
+            Name="condLabelText"
+            Foreground="White"
+            VerticalContentAlignment="Center"
+            Content="Test Holder String"/>
+
+        <Label
+            Grid.Row="11"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            Grid.ColumnSpan="2"
+            Margin="10,0,0,0"
+            Name="collRoleLabelText"
+            Foreground="White"
+            VerticalContentAlignment="Center"
+            Content="Test Holder String"/>
+
+        <!-- Start of Right Panels -->
+
+          
+
+        <Label
+            Grid.Row="7"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            Grid.RowSpan="1"
+            VerticalContentAlignment="Center"
+            x:Name="SessionTimeLabel" 
+            Margin="25,0,0,0"
+            Content="Total Time (All Session Time):     " 
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Grid.Row="7"
+            Grid.Column="5"
+            Grid.ColumnSpan="1"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            Grid.RowSpan="1"
+            x:Name="SessionTimeText" 
+            Foreground="White"
+            Content="00:00:00" 
+            Margin="10,0,30,0"
+            VerticalAlignment="Center" />
+
+        <Label
+            Grid.Row="8"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            Grid.RowSpan="1"
+            VerticalContentAlignment="Center"
+            x:Name="SessionTimeLabelSchedOne" 
+            Margin="25,0,0,0"
+            Content="Schedule 1 (Base Schedule):     " 
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Grid.Row="8"
+            Grid.Column="5"
+            Grid.ColumnSpan="1"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            Grid.RowSpan="1"
+            x:Name="SessionTimeTextSchedOne" 
+            Content="00:00:00"  
+            Foreground="{StaticResource LightGrayTextContrast}"
+            Margin="10,0,30,0"
+            VerticalAlignment="Center"/>
+
+        <Label
+            Grid.Row="9"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            Grid.RowSpan="1"
+            VerticalContentAlignment="Center"
+            Margin="25,0,0,0"
+            x:Name="SessionTimeLabelSchedTwo" 
+            Content="Schedule 2 (Optional Schedule):     " 
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Grid.Row="9"
+            Grid.Column="5"
+            Grid.ColumnSpan="1"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            Grid.RowSpan="1"
+            x:Name="SessionTimeTextSchedTwo" 
+            Content="00:00:00"  
+            Margin="10,0,30,0"
+            Foreground="{StaticResource LightGrayTextContrast}"
+            VerticalAlignment="Center"/>
+
+        <Label
+            Grid.Row="10"
+            Grid.Column="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            Grid.RowSpan="1"
+            x:Name="SessionTimeLabelSchedThree" 
+            Margin="25,0,0,0"
+            VerticalContentAlignment="Center"
+            Content="Schedule 3 (Optional Schedule):     " 
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Grid.Row="10"
+            Grid.Column="5"
+            Grid.ColumnSpan="1"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            Grid.RowSpan="1"
+            x:Name="SessionTimeTextSchedThree" 
+            Content="00:00:00"  
+            Margin="10,0,30,0"
+            Foreground="{StaticResource LightGrayTextContrast}"
+            VerticalAlignment="Center"/>            
+            
+        <Border
+            Grid.Column="5"
+            Grid.Row="7"
+            Margin="5,5,25,5"
+            BorderBrush="{StaticResource LightGrayTextContrast}"
+            BorderThickness="1">
+        </Border>
+
+        <Border
+            Grid.Column="5"
+            Grid.Row="8"
+            Margin="5,5,25,5"
+            BorderBrush="{StaticResource LightGrayTextContrast}"
+            BorderThickness="1">
+        </Border>
+
+        <Border
+            Grid.Column="5"
+            Grid.Row="9"
+            Margin="5,5,25,5"
+            BorderBrush="{StaticResource LightGrayTextContrast}"
+            BorderThickness="1">
+        </Border>
+
+        <Border
+            Grid.Column="5"
+            Grid.Row="10"
+            Margin="5,5,25,5"
+            BorderBrush="{StaticResource LightGrayTextContrast}"
+            BorderThickness="1">
+        </Border>
+
+        <Label
+            Name="SessionDirs01"
+            Grid.Row="6"
+            Grid.Column="3"
+            Grid.ColumnSpan="3"
+            Content="Session Durations"                
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            VerticalAlignment="Stretch"                               
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+            
+        <Label
+            Name="SessionDirs02"
+            Grid.Row="12"
+            Grid.Column="3"
+            Grid.ColumnSpan="3"
+            HorizontalAlignment="Left"
+            Margin="25,0,0,0"
+            Content="TAB key: Begin session/start timers " 
+            VerticalContentAlignment="Center"
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Name="SessionDirs03"
+            Grid.Row="13"
+            Grid.Column="3"
+            Grid.ColumnSpan="3"
+            HorizontalAlignment="Left"
+            Margin="25,0,0,0"
+            Content="ESC key: Terminate the session " 
+            VerticalContentAlignment="Center"
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Name="SessionDirs04"
+            Grid.Row="14"
+            Grid.Column="3"
+            Grid.ColumnSpan="3"
+            HorizontalAlignment="Left"
+            Margin="25,0,0,0"
+            Content="Z key: Switches to Schedule #1 (Base)" 
+            VerticalContentAlignment="Center"
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Name="SessionDirs05"
+            Grid.Row="15"
+            Grid.Column="3"
+            Grid.ColumnSpan="3"
+            HorizontalAlignment="Left"
+            Margin="25,0,0,0"
+            Content="X key: Switch to Schedule #2 (Yellow Time)" 
+            VerticalContentAlignment="Center"
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Name="SessionDirs06"
+            Grid.Row="16"
+            Grid.Column="3"
+            Grid.ColumnSpan="3"
+            HorizontalAlignment="Left"
+            Margin="25,0,0,0"
+            Content="C key: Switch to Schedule #3 (Red Time)" 
+            VerticalContentAlignment="Center"
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <Label
+            Name="SessionDirs07"
+            Grid.Row="11"
+            Grid.Column="3"
+            Grid.ColumnSpan="3"
+            Visibility="Visible"
+            HorizontalAlignment="Left"
+            Margin="25,0,0,0"
+            VerticalContentAlignment="Center"
+            Content="BACKSPACE key: Remove last key entered" 
+            Foreground="{StaticResource LightGrayTextContrast}"/>
+
+        <ListView Name="progressBox"
+                Grid.Row="12"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Grid.RowSpan="5"              
+                KeyboardNavigation.TabNavigation="None"  
+                Margin="25, 0, 25, 0"
+                BorderBrush="Transparent"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                VirtualizingStackPanel.IsVirtualizing="True"
+                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                Background="Transparent">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Foreground" Value="#747a79" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                    <GridViewColumn Header="Code " 
+                                    HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                                    Width="100" 
+                                    DisplayMemberBinding="{Binding Code}" />
+                    <GridViewColumn Header="Key " 
+                                    HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                                    Width="150" 
+                                    DisplayMemberBinding="{Binding Key}"/>
+                    <GridViewColumn Header="Time" 
+                                    HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
+                                    Width="100" 
+                                    DisplayMemberBinding="{Binding Time}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>
