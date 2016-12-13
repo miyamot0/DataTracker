@@ -184,6 +184,7 @@
             CanUserSortColumns="False"
             Margin="20,0,20,0"
             ItemsSource="{Binding}" 
+            HeadersVisibility="Column"
             LostFocus="topDataGrid_LostFocus">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -227,6 +228,7 @@
             CanUserSortColumns="False"
             Margin="20,0,20,0"
             ItemsSource="{Binding}" 
+            HeadersVisibility="Column"
             LostFocus="topDataGrid_LostFocus">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -278,6 +280,7 @@
             IsReadOnly="True"
             Foreground="Green"
             CanUserSortColumns="False"
+            HeadersVisibility="Column"
             ItemsSource="{Binding}">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
@@ -322,6 +325,7 @@
             IsReadOnly="True"
             Foreground="Green"
             CanUserSortColumns="False"
+            HeadersVisibility="Column"
             ItemsSource="{Binding}">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
@@ -375,6 +379,7 @@
             Foreground="Orange"
             CanUserSortColumns="False"
             Margin="20,0,20,0"
+            HeadersVisibility="Column"
             ItemsSource="{Binding}">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
@@ -413,6 +418,7 @@
             IsReadOnly="True"
             Foreground="Orange"
             CanUserSortColumns="False"
+            HeadersVisibility="Column"
             ItemsSource="{Binding}">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
@@ -460,6 +466,7 @@
             IsReadOnly="True"
             Foreground="Red"
             CanUserSortColumns="False"
+            HeadersVisibility="Column"
             ItemsSource="{Binding}">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
@@ -498,6 +505,7 @@
             IsReadOnly="True"
             Foreground="Red"
             CanUserSortColumns="False"
+            HeadersVisibility="Column"
             ItemsSource="{Binding}">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
