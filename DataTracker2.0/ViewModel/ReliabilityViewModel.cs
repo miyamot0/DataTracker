@@ -36,7 +36,7 @@ namespace DataTracker.ViewModel
             set
             {
                 _groups = value;
-                OnPropertyChanged("AllGroups");
+                OnPropertyChanged("AllGroups"); 
             }
         }
 
