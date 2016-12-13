@@ -9,9 +9,10 @@ Features include:
   - All data locally managed
   
 ### Version
-1.0.0.0
+1.0.6.1
 
 ### Changelog
+ * 1.0.6.1 - Brought up to speed with earlier beta
  * 1.0.0.0 - Initial push
  
 ### Referenced Works (Packages)
