@@ -413,8 +413,6 @@ namespace DataTracker.ViewModel
                 if (firstIndex)
                 {
                     mMain = mPrimaryList.Where(f => f.SessionNumber == index.Session).FirstOrDefault();
-
-                    //mMain = GetFromListBySession(index.Session, mPrimaryList);
                     rowSpacer = 6;
 
                     List<string> keyList = new List<string>(mMain.FrequencyValues.Keys);
@@ -454,10 +452,8 @@ namespace DataTracker.ViewModel
                     {
                         mMain = mPrimaryList.Where(f => f.SessionNumber == index.Session).FirstOrDefault();
 
-                        //mMain = GetFromListBySession(index.Session, mPrimaryList);
                         rowSpacer = 6;
 
-                        //mMain = GetFromListBySession(index.Session, mPrimaryList);
                         List<string> fKeyList = new List<string>(mMain.FrequencyValues.Keys);
 
                         for (int fCount = 0; fCount < fKeyList.Count; fCount++)
