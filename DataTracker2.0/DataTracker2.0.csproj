@@ -146,14 +146,14 @@
     <Compile Include="Dialog\AddKeyDialog.xaml.cs">
       <DependentUpon>AddKeyDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\MetroDialog.xaml.cs">
-      <DependentUpon>MetroDialog.xaml</DependentUpon>
+    <Compile Include="Dialog\Dialog.xaml.cs">
+      <DependentUpon>Dialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\MetroDialogEditYesNo.xaml.cs">
-      <DependentUpon>MetroDialogEditYesNo.xaml</DependentUpon>
+    <Compile Include="Dialog\DialogEditYesNo.xaml.cs">
+      <DependentUpon>DialogEditYesNo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\MetroDialogYesNo.xaml.cs">
-      <DependentUpon>MetroDialogYesNo.xaml</DependentUpon>
+    <Compile Include="Dialog\DialogYesNo.xaml.cs">
+      <DependentUpon>DialogYesNo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Collector.cs" />
     <Compile Include="Model\Collectors.cs" />
@@ -209,15 +209,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\MetroDialog.xaml">
+    <Page Include="Dialog\Dialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\MetroDialogEditYesNo.xaml">
+    <Page Include="Dialog\DialogEditYesNo.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\MetroDialogYesNo.xaml">
+    <Page Include="Dialog\DialogYesNo.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

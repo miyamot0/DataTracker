@@ -1,9 +1,141 @@
-﻿<Application x:Class="DataTracker.App"
+﻿<!--
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+-->
+
+<Application x:Class="DataTracker.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:DataTracker">
     <Application.Resources>
         <ResourceDictionary>
+            
+            <!-- Default Windows Background -->
+            <Style x:Key="BackgroundStyle" TargetType="Window">
+                <Setter Property="Background" Value="#C3D9F0" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <!-- Default Text color -->
+            <SolidColorBrush x:Key="LightGrayTextContrast">#747a79</SolidColorBrush>
+
+            <!-- This storyboard will make the image grow to double its size in 0.2 seconds -->
+            <Storyboard x:Key="expandStoryboard">
+                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                             To="1.1" 
+                             Duration="0:0:0.2" />
+                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                             To="1.1" 
+                             Duration="0:0:0.2" />
+            </Storyboard>
+
+            <!-- This storyboard will make the image revert to its original size -->
+            <Storyboard x:Key="shrinkStoryboard">
+                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
+                             To="1" 
+                             Duration="0:0:0.2" />
+                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
+                             To="1" 
+                             Duration="0:0:0.2" />
+            </Storyboard>
+
+            <Style TargetType="{x:Type GridViewColumnHeader}" x:Key="MyHeaderStyle">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                            <Border BorderThickness="0,0,0,1" BorderBrush="Transparent" Background="Transparent">
+                                <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="5,5,5,0" Width="{TemplateBinding Width}" TextAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Width" Value="Auto" />
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}" />
+            </Style>
+
+            <Style x:Key="BaseButtonStyle" TargetType="{x:Type Button}">
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                <Setter Property="Background" Value="#ECF3FA"/>
+                <Setter Property="BorderBrush" Value="#cccccc"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Name="Chrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="true">
+                                <ContentPresenter Name="Presenter" Margin="{TemplateBinding Padding}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    RecognizesAccessKey="True"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="#333333" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#dddddd" />
+                                    <Setter Property="BorderBrush" Value="#cccccc" />
+                                    <Setter Property="Foreground" Value="#333333" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#1ba1e2" />
+                                    <Setter Property="BorderBrush" Value="#1ba1e2"/>
+                                    <Setter Property="Foreground" Value="#ffffff"/>
+                                </Trigger>
+                                <Trigger Property="IsFocused" Value="true">
+                                    <Setter TargetName="Chrome" Property="BorderBrush" Value="#1ba1e2" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard Storyboard="{StaticResource expandStoryboard}" />
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <BeginStoryboard Storyboard="{StaticResource shrinkStoryboard}" />
+                        </Trigger.ExitActions>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="BaseTextTitleStyle" TargetType="{x:Type Label}">
+                <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}"/>
+                <Setter Property="FontSize" Value="2" />
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

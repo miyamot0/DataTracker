@@ -1,4 +1,22 @@
-﻿using DataTracker.Model;
+﻿/*
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
+using DataTracker.Model;
 using Microsoft.Win32;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -12,16 +30,9 @@ using System.Windows;
 
 namespace DataTracker.ViewModel
 {
-    static class Extensions
-    {
-        public static void Sort<T>(this ObservableCollection<T> collection) where T : IComparable
-        {
-            List<T> sorted = collection.OrderBy(x => x).ToList();
-            for (int i = 0; i < sorted.Count(); i++)
-                collection.Move(collection.IndexOf(sorted[i]), i);
-        }
-    }
-
+    /// <summary>
+    /// View model
+    /// </summary>
     class ReliabilityViewModel : ViewModelBase
     {
         public RelayCommand Initialize { get; set; }
@@ -123,13 +134,16 @@ namespace DataTracker.ViewModel
         public static XSSFWorkbook hssfworkbook;
         public static List<FileIndexClass> mPrimaryList = new List<FileIndexClass>();
         public static List<FileIndexClass> mReliList = new List<FileIndexClass>();
-
+        
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public ReliabilityViewModel()
         {
-            this.Initialize = new RelayCommand(param => UpdateGroups(), param => true);
-            this.RunReliabilityCommand = new RelayCommand(param => CalculateReliability(), param => true);
-            this.SelectAll = new RelayCommand(param => SelectingAll(), param => true);
-            this.UnselectAll = new RelayCommand(param => DeselectingAll(), param => true);
+            Initialize = new RelayCommand(param => UpdateGroups(), param => true);
+            RunReliabilityCommand = new RelayCommand(param => CalculateReliability(), param => true);
+            SelectAll = new RelayCommand(param => SelectingAll(), param => true);
+            UnselectAll = new RelayCommand(param => DeselectingAll(), param => true);
 
             _groups = new ObservableCollection<Group>();
             AllGroups = new ObservableCollection<Group>();
@@ -151,9 +165,11 @@ namespace DataTracker.ViewModel
 
             _reliIndices = new ObservableCollection<ReliabilityIndex>();
             AllReliabilityIndices = new ObservableCollection<ReliabilityIndex>();
-
         }
 
+        /// <summary>
+        /// Mark selected
+        /// </summary>
         void SelectingAll()
         {
             foreach (ReliabilityIndex index in _reliIndices)
@@ -162,6 +178,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Unmark selected
+        /// </summary>
         void DeselectingAll()
         {
             foreach (ReliabilityIndex index in _reliIndices)
@@ -170,6 +189,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Update all groups
+        /// </summary>
         public void UpdateGroups()
         {
             var mPath = Path.Combine(Properties.Settings.Default.SaveLocation);
@@ -191,6 +213,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Update all individuals
+        /// </summary>
         public void UpdateIndividuals()
         {
             if (AllIndividuals == null)
@@ -215,6 +240,9 @@ namespace DataTracker.ViewModel
             { }
         }
 
+        /// <summary>
+        /// Update all evaluations
+        /// </summary>
         public void UpdateEvaluations()
         {
 
@@ -240,6 +268,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Calculate reli summaries
+        /// </summary>
         public void RunReliability()
         {
 
@@ -251,7 +282,6 @@ namespace DataTracker.ViewModel
                 AllReliabilityIndices.Clear();
 
                 Path.Combine(Properties.Settings.Default.SaveLocation, SelectedGroup.GroupName);
-//                var targetDirectory = Properties.Settings.Default.SaveLocation + "\\" + SelectedGroup.GroupName + "\\" + SelectedIndividual.IndividualName + "\\" + SelectedEvaluation.EvaluationName + "\\";
                 var targetDirectory = Path.Combine(Properties.Settings.Default.SaveLocation, SelectedGroup.GroupName, SelectedIndividual.IndividualName, SelectedEvaluation.EvaluationName);
 
                 DirectoryInfo di = new DirectoryInfo(@targetDirectory);
@@ -276,14 +306,10 @@ namespace DataTracker.ViewModel
 
                 foreach(FileIndexClass primary in mPrimaryList)
                 {
-
                     foreach(FileIndexClass reli in mReliList)
                     {
                         if (primary.SessionNumber == reli.SessionNumber && primary.Condition == reli.Condition)
                         {
-
-                            //TODO
-                            //Aggreements based on Dur and Freq Measures
                             AllReliabilityIndices.Add(new ReliabilityIndex
                             {
                                 TitleName = "Session #" + primary.SessionNumber + " - Condition: " + primary.Condition + " (Reli)",
@@ -303,7 +329,6 @@ namespace DataTracker.ViewModel
                                 FrequencyTags = primary.FrequencyTags,
                                 FrequencyValues = primary.FrequencyValues,
                                 DurationValues = primary.DurationValues,
-
                                 ReliCollector = reli.DataCollector,
                                 ReliFrequencyValues = reli.FrequencyValues,
                                 ReliDurationValues = reli.DurationValues,
@@ -338,10 +363,12 @@ namespace DataTracker.ViewModel
                         AllReliabilityIndices.Sort();
                     }
                 }
-
             }
         }
 
+        /// <summary>
+        /// Calculate reli
+        /// </summary>
         public void CalculateReliability()
         {
             if (AllReliabilityIndices.Count < 1)
@@ -380,13 +407,14 @@ namespace DataTracker.ViewModel
 
             bool firstIndex = true;
             int rowSpacer = 6;
-            //int titleSpacer;
 
             foreach (ReliabilityIndex index in AllReliabilityIndices)
             {
                 if (firstIndex)
                 {
-                    mMain = GetFromListBySession(index.Session, mPrimaryList);
+                    mMain = mPrimaryList.Where(f => f.SessionNumber == index.Session).FirstOrDefault();
+
+                    //mMain = GetFromListBySession(index.Session, mPrimaryList);
                     rowSpacer = 6;
 
                     List<string> keyList = new List<string>(mMain.FrequencyValues.Keys);
@@ -424,11 +452,12 @@ namespace DataTracker.ViewModel
 
                     if (index.HasReli)
                     {
+                        mMain = mPrimaryList.Where(f => f.SessionNumber == index.Session).FirstOrDefault();
 
-                        mMain = GetFromListBySession(index.Session, mPrimaryList);
+                        //mMain = GetFromListBySession(index.Session, mPrimaryList);
                         rowSpacer = 6;
 
-                        mMain = GetFromListBySession(index.Session, mPrimaryList);
+                        //mMain = GetFromListBySession(index.Session, mPrimaryList);
                         List<string> fKeyList = new List<string>(mMain.FrequencyValues.Keys);
 
                         for (int fCount = 0; fCount < fKeyList.Count; fCount++)
@@ -455,7 +484,6 @@ namespace DataTracker.ViewModel
                                 rowSpacer = rowSpacer + 6;
                             }
                         }
-
 
                         List<string> dKeyList = new List<string>(mMain.DurationValues.Keys);
 
@@ -522,6 +550,12 @@ namespace DataTracker.ViewModel
 
         }
 
+        /// <summary>
+        /// Calculate exact interval agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getFreqEIA(int[] mPrimary, int[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -546,6 +580,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count)))*100;
         }
 
+        /// <summary>
+        /// Calculate duration interval agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getDurationEIA(double[] mPrimary, double[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -570,6 +610,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count))) * 100;
         }
 
+        /// <summary>
+        /// Get frequency partial interval agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getFreqPIA(int[] mPrimary, int[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -603,6 +649,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count)))*100;
         }
 
+        /// <summary>
+        /// Get duration partial interval agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getDurationPIA(double[] mPrimary, double[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -636,6 +688,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count))) * 100;
         }
 
+        /// <summary>
+        /// Get frequency total interval agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getFreqTIA(int[] mPrimary, int[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -665,6 +723,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count)))*100;
         }
 
+        /// <summary>
+        /// Get duration total interval agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getDurationTIA(double[] mPrimary, double[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -694,6 +758,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count))) * 100;
         }
 
+        /// <summary>
+        /// Get frequency occurrence interval agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getFreqOIA(int[] mPrimary, int[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -726,6 +796,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count)))*100;
         }
 
+        /// <summary>
+        /// Get duration occurrence duration agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getDurationOIA(double[] mPrimary, double[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -758,6 +834,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count))) * 100;
         }
 
+        /// <summary>
+        /// Get frequency non-occurrence interval agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getFreqNIA(int[] mPrimary, int[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -790,6 +872,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count)))*100;
         }
 
+        /// <summary>
+        /// Get duration non-occurrence interval agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getDurationNIA(double[] mPrimary, double[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -822,6 +910,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count))) * 100;
         }
 
+        /// <summary>
+        /// Percent mean agreement
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getFreqPMA(int[] mPrimary, int[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -834,7 +928,6 @@ namespace DataTracker.ViewModel
             int count = 0, innerCount = 0;
             double sum = 0.0, innerPrim = 0.0, innerReli = 0.0;
             double higher, lower;
-
 
             for (int i = 0; i < runLength; i++)
             {
@@ -863,6 +956,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count)))*100;
         }
 
+        /// <summary>
+        /// Percent mean agreement, duration
+        /// </summary>
+        /// <param name="mPrimary"></param>
+        /// <param name="mSecondary"></param>
+        /// <returns></returns>
         public static double getDurationPMA(double[] mPrimary, double[] mSecondary)
         {
             if (mPrimary.Length == 0 || mSecondary.Length == 0)
@@ -905,6 +1004,12 @@ namespace DataTracker.ViewModel
             return (sum / (((double)count))) * 100;
         }
 
+        /// <summary>
+        /// DEPRECATED, using linq instead
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="mList"></param>
+        /// <returns></returns>
         public static FileIndexClass GetFromListBySession(int index, List<FileIndexClass> mList)
         {
             foreach (FileIndexClass mIndex in mList)
@@ -916,8 +1021,16 @@ namespace DataTracker.ViewModel
             return null;
         }
 
+        /// <summary>
+        /// Reliability index class
+        /// </summary>
         public class ReliabilityIndex : IComparable, INotifyPropertyChanged
         {
+            /// <summary>
+            /// Comparator helper
+            /// </summary>
+            /// <param name="o"></param>
+            /// <returns></returns>
             public int CompareTo(object o)
             {
                 ReliabilityIndex a = this;
@@ -957,16 +1070,14 @@ namespace DataTracker.ViewModel
             private bool _isSelected;
 
             public event PropertyChangedEventHandler PropertyChanged;
-
             protected virtual void OnPropertyChanged(string propertyName = null)
             {
-                PropertyChangedEventHandler handler = PropertyChanged;
-                if (handler != null)
-                {
-                    handler(this, new PropertyChangedEventArgs(propertyName));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
 
+            /// <summary>
+            /// If selected for analysis
+            /// </summary>
             public bool IsSelected
             {
                 get { return _isSelected; }
@@ -980,16 +1091,41 @@ namespace DataTracker.ViewModel
             public bool HasReli { get; set; }
         }
 
+        /// <summary>
+        /// File index
+        /// </summary>
         public class FileIndexClass
         {
+            /// <summary>
+            /// Default constructor
+            /// </summary>
             public FileIndexClass()
             {
 
             }
 
+            /// <summary>
+            /// Literal constructor
+            /// </summary>
+            /// <param name="_dataCollector"></param>
+            /// <param name="_sessionNumber"></param>
+            /// <param name="_condition"></param>
+            /// <param name="_role"></param>
+            /// <param name="_durKeys"></param>
+            /// <param name="_freKeys"></param>
+            /// <param name="_rows"></param>
+            /// <returns></returns>
             public static FileIndexClass CreateFileIndexClass(string _dataCollector, int _sessionNumber, string _condition, string _role, int _durKeys, int _freKeys, int _rows)
             {
-                return new FileIndexClass { DataCollector = _dataCollector, SessionNumber = _sessionNumber, Condition = _condition, Role = _role, Rows = _rows, DurationKeys = _durKeys, FrequencyKeys = _freKeys };
+                return new FileIndexClass {
+                    DataCollector = _dataCollector,
+                    SessionNumber = _sessionNumber,
+                    Condition = _condition,
+                    Role = _role,
+                    Rows = _rows,
+                    DurationKeys = _durKeys,
+                    FrequencyKeys = _freKeys
+                };
             }
 
             public string PatientName { get; set; }
@@ -1006,6 +1142,7 @@ namespace DataTracker.ViewModel
             public int DurationKeys { get; set; }
             public double[][] DurationEntries { get; set; }
             public string[] FrequencyTags { get; set; }
+
             public Dictionary<string, double[]> DurationValues { get; set; }
             public Dictionary<string, int[]> FrequencyValues { get; set; }
 
@@ -1013,80 +1150,99 @@ namespace DataTracker.ViewModel
             public Dictionary<string, int[]> FrequencyValuesReli { get; set; }
         }
         
+        /// <summary>
+        /// Workbook for save
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="localList"></param>
         static void InitializeWorkbook(string path, List<FileIndexClass> localList)
         {
-                using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                hssfworkbook = new XSSFWorkbook(file);
+                ISheet worksheet = hssfworkbook.GetSheet("Cover Page");
+                ISheet dursheet = hssfworkbook.GetSheet("DurationIntervals");
+                ISheet fresheet = hssfworkbook.GetSheet("FrequencyIntervals");
+
+                int lastRowNumber = dursheet.LastRowNum;
+                int durKeys = dursheet.GetRow(0).LastCellNum;
+
+                double[][] DurationMatrix = new double[durKeys][];
+
+                Dictionary<string, double[]> durDictionary = new Dictionary<string, double[]>();
+
+                for (int i = 0; i < durKeys; i++)
                 {
-                    hssfworkbook = new XSSFWorkbook(file);
-                    ISheet worksheet = hssfworkbook.GetSheet("Cover Page");
-                    ISheet dursheet = hssfworkbook.GetSheet("DurationIntervals");
-                    ISheet fresheet = hssfworkbook.GetSheet("FrequencyIntervals");
+                    DurationMatrix[i] = new double[lastRowNumber];
 
-                    int lastRowNumber = dursheet.LastRowNum;
-                    int durKeys = dursheet.GetRow(0).LastCellNum;
+                    double[] temp = new double[lastRowNumber];
 
-                    double[][] DurationMatrix = new double[durKeys][];
-
-                    Dictionary<string, double[]> durDictionary = new Dictionary<string, double[]>();
-
-                    for (int i = 0; i < durKeys; i++)
+                    for (int j = 0; j < lastRowNumber; j++)
                     {
-                        DurationMatrix[i] = new double[lastRowNumber];
-
-                        double[] temp = new double[lastRowNumber];
-
-                        for (int j = 0; j < lastRowNumber; j++)
-                        {
-                            DurationMatrix[i][j] = double.Parse(dursheet.GetRow(j + 1).GetCell(i).ToString());
-                            temp[j] = double.Parse(dursheet.GetRow(j + 1).GetCell(i).ToString());
-                        }
-
-                        durDictionary.Add(dursheet.GetRow(0).GetCell(i).ToString(), temp);
+                        DurationMatrix[i][j] = double.Parse(dursheet.GetRow(j + 1).GetCell(i).ToString());
+                        temp[j] = double.Parse(dursheet.GetRow(j + 1).GetCell(i).ToString());
                     }
 
-                    int freKeys = fresheet.GetRow(0).LastCellNum;
-                    string[] freTags = new string[freKeys];
-
-                    Dictionary<string, int[]> freqDictionary = new Dictionary<string, int[]>();
-                
-                    for (int i = 0; i < durKeys; i++)
-                    {
-                        freTags[i] = fresheet.GetRow(0).GetCell(i).ToString().Trim();
-                        int[] freqTemp = new int[lastRowNumber];
-                        int mValue = -1;
-
-                        for (int j = 0; j < lastRowNumber; j++)
-                        {
-                            mValue = -1;
-                            int.TryParse(fresheet.GetRow(j + 1).GetCell(i).ToString().Trim(), out mValue);
-                            freqTemp[j] = mValue;
-                        }
-
-                        freqDictionary.Add(fresheet.GetRow(0).GetCell(i).ToString(), freqTemp);
-                    }
-
-                    FileIndexClass mFile = new FileIndexClass();
-                    mFile.PatientName = worksheet.GetRow(0).GetCell(1).ToString();
-                    mFile.DateCollected = worksheet.GetRow(1).GetCell(1).ToString();
-                    mFile.PatientGroup = worksheet.GetRow(2).GetCell(1).ToString();
-                    mFile.Evaluation = worksheet.GetRow(3).GetCell(1).ToString();
-                    mFile.Condition = worksheet.GetRow(4).GetCell(1).ToString();
-                    mFile.Keyboard = worksheet.GetRow(5).GetCell(1).ToString();
-                    mFile.DataCollector = worksheet.GetRow(6).GetCell(1).ToString();
-                    mFile.Role = worksheet.GetRow(7).GetCell(1).ToString();
-                    mFile.SessionNumber = int.Parse(worksheet.GetRow(8).GetCell(1).ToString());
-
-                    mFile.Rows = lastRowNumber;
-                    mFile.DurationKeys = durKeys;
-                    mFile.FrequencyKeys = freKeys;
-                    mFile.FrequencyTags = freTags;
-                    mFile.DurationEntries = DurationMatrix;
-                    mFile.DurationValues = durDictionary;
-                    mFile.FrequencyValues = freqDictionary;
-
-                    localList.Add(mFile);
-
+                    durDictionary.Add(dursheet.GetRow(0).GetCell(i).ToString(), temp);
                 }
+
+                int freKeys = fresheet.GetRow(0).LastCellNum;
+                string[] freTags = new string[freKeys];
+
+                Dictionary<string, int[]> freqDictionary = new Dictionary<string, int[]>();
+                
+                for (int i = 0; i < durKeys; i++)
+                {
+                    freTags[i] = fresheet.GetRow(0).GetCell(i).ToString().Trim();
+                    int[] freqTemp = new int[lastRowNumber];
+                    int mValue = -1;
+
+                    for (int j = 0; j < lastRowNumber; j++)
+                    {
+                        mValue = -1;
+                        int.TryParse(fresheet.GetRow(j + 1).GetCell(i).ToString().Trim(), out mValue);
+                        freqTemp[j] = mValue;
+                    }
+
+                    freqDictionary.Add(fresheet.GetRow(0).GetCell(i).ToString(), freqTemp);
+                }
+
+                FileIndexClass mFile = new FileIndexClass();
+                mFile.PatientName = worksheet.GetRow(0).GetCell(1).ToString();
+                mFile.DateCollected = worksheet.GetRow(1).GetCell(1).ToString();
+                mFile.PatientGroup = worksheet.GetRow(2).GetCell(1).ToString();
+                mFile.Evaluation = worksheet.GetRow(3).GetCell(1).ToString();
+                mFile.Condition = worksheet.GetRow(4).GetCell(1).ToString();
+                mFile.Keyboard = worksheet.GetRow(5).GetCell(1).ToString();
+                mFile.DataCollector = worksheet.GetRow(6).GetCell(1).ToString();
+                mFile.Role = worksheet.GetRow(7).GetCell(1).ToString();
+                mFile.SessionNumber = int.Parse(worksheet.GetRow(8).GetCell(1).ToString());
+
+                mFile.Rows = lastRowNumber;
+                mFile.DurationKeys = durKeys;
+                mFile.FrequencyKeys = freKeys;
+                mFile.FrequencyTags = freTags;
+                mFile.DurationEntries = DurationMatrix;
+                mFile.DurationValues = durDictionary;
+                mFile.FrequencyValues = freqDictionary;
+
+                localList.Add(mFile);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Sorting extension
+    /// </summary>
+    static class Extensions
+    {
+        public static void Sort<T>(this ObservableCollection<T> collection) where T : IComparable
+        {
+            List<T> sorted = collection.OrderBy(x => x).ToList();
+            for (int i = 0; i < sorted.Count(); i++)
+            {
+                collection.Move(collection.IndexOf(sorted[i]), i);
+            }
         }
     }
 }

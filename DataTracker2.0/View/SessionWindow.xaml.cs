@@ -276,7 +276,7 @@ namespace DataTracker.View
         {
             if (stopWatch.IsRunning)
             {
-                var dialog = new MetroDialogYesNo();
+                var dialog = new DialogYesNo();
                 dialog.Title = "Quit Running Session?";
                 dialog.QuestionText = "Do you want to discontinue the current session?";
 

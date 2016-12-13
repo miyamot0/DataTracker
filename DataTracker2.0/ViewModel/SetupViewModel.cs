@@ -1,4 +1,22 @@
-﻿using DataTracker.DataAccess;
+﻿/*
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
+using DataTracker.DataAccess;
 using DataTracker.Dialog;
 using DataTracker.Model;
 using DataTracker.Utilities;
@@ -15,9 +33,18 @@ using System.Windows;
 
 namespace DataTracker.ViewModel
 {
+    /// <summary>
+    /// View model
+    /// </summary>
     class SetupViewModel : ViewModelBase, InterfaceSetup
     {
-        private string _group, _indiv, _eval, _cond, _keys, _collect, _ther;
+        private string _group, 
+            _indiv, 
+            _eval, 
+            _cond, 
+            _keys, 
+            _collect, 
+            _ther;
 
         public RelayCommand CloseSetupWindow { get; set; }
         public RelayCommand SetupWindowFired { get; set; }
@@ -95,6 +122,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public SetupViewModel()
         {
             CloseSetupWindow = new RelayCommand(param => CloseSettingsWindow(), param => true);
@@ -129,12 +159,18 @@ namespace DataTracker.ViewModel
             therapistListViewModel.mInt = this;
         }
 
+        /// <summary>
+        /// Close settings window
+        /// </summary>
         public void CloseSettingsWindow()
         {
             var mainWindow = WindowTools.GetWindowRef("SetupWindowTag");
             mainWindow.Close();
         }
 
+        /// <summary>
+        /// Open session window
+        /// </summary>
         public void OpenSessionWindow()
         {
             if (_group == null || _group.Length < 1 ||
@@ -288,6 +324,11 @@ namespace DataTracker.ViewModel
             CountSessions();
         }
 
+        /// <summary>
+        /// Get session length
+        /// </summary>
+        /// <param name="mString"></param>
+        /// <returns></returns>
         public int GetSessionLength(string mString)
         {
             if (mString.Trim().ToLower() == "untimed")
@@ -301,9 +342,12 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Open group window
+        /// </summary>
         public void OpenAddGroupDialog()
         {
-            var dialog = new MetroDialog();
+            var dialog = new Dialog.Dialog();
             dialog.Title = "Add New Group";
             dialog.QuestionText = "Please give a name to the new group.";
             if (dialog.ShowDialog() == true)
@@ -328,12 +372,15 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Open individual window
+        /// </summary>
         public void OpenAddIndividualDialog()
         {
             if (_group == null || _group.Length < 1)
                 return;
 
-            var dialog = new MetroDialog();
+            var dialog = new Dialog.Dialog();
             dialog.Title = "Add New Individual";
             dialog.QuestionText = "Please give a name to the new individual.";
 
@@ -352,13 +399,16 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Open evaluation window
+        /// </summary>
         public void OpenAddEvaluationDialog()
         {
 
             if (_group == null || _indiv == null || _group.Length < 1 || _indiv.Length < 1)
                 return;
 
-            var dialog = new MetroDialog();
+            var dialog = new Dialog.Dialog();
             dialog.Title = "Add New Evaluation";
             dialog.QuestionText = "Please give a name to the new evaluation.";
 
@@ -379,12 +429,15 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Open condition window
+        /// </summary>
         public void OpenAddConditionDialog()
         {
             if (_group == null || _indiv == null || _eval == null || _group.Length < 1 || _indiv.Length < 1 || _eval.Length < 1)
                 return;
 
-            var dialog = new MetroDialog();
+            var dialog = new Dialog.Dialog();
             dialog.Title = "Add New Condition";
             dialog.QuestionText = "Please give a name to the new condition.";
 
@@ -404,6 +457,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Open add keyboard window
+        /// </summary>
         public void OpenAddKeyboardDialog()
         {
             if (_group == null || _group.Length < 1 || _indiv == null | _indiv.Length < 1)
@@ -413,8 +469,9 @@ namespace DataTracker.ViewModel
 
             if (_keys != null && _keys.Length > 0)
             {
-                var editDialog = new MetroDialogEditYesNo();
+                var editDialog = new DialogEditYesNo();
                 editDialog.QuestionText = "Do you want new keys or to edit: " + _keys;
+
                 if (editDialog.ShowDialog() == true)
                 {
                     editingCurrent = editDialog.ReturnedAnswer;
@@ -434,7 +491,6 @@ namespace DataTracker.ViewModel
 
                 mModel.SetupKeysEditing(editingCurrent);
 
-
                 if (kbWindow.ShowDialog() == true)
                 {
                     using (StreamWriter file = new StreamWriter(Path.Combine(Properties.Settings.Default.SaveLocation, _group, _indiv,  _keys + ".json"), false))
@@ -452,8 +508,7 @@ namespace DataTracker.ViewModel
             }
             else
             {
-                // Default New
-                var dialog = new MetroDialog();
+                var dialog = new Dialog.Dialog();
                 dialog.Title = "Add New Key Set";
                 dialog.QuestionText = "Please give a name to the new key set.";
 
@@ -472,7 +527,6 @@ namespace DataTracker.ViewModel
                     kbWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
                     kbWindow.DataContext = mModel;
 
-
                     if (kbWindow.ShowDialog() == true)
                     {
                         using (StreamWriter file = new StreamWriter(Path.Combine(Properties.Settings.Default.SaveLocation, _group, _indiv, mKeySetName + ".json"), false))
@@ -487,19 +541,19 @@ namespace DataTracker.ViewModel
 
                         keyboardListViewModel.RefreshRepository(_group, _indiv);
                     }
-
-
                 }
             }
-
         }
 
+        /// <summary>
+        /// Open collector window
+        /// </summary>
         public void OpenAddCollectorDialog()
         {
             if (_group == null || _group.Length < 1 || _indiv == null | _indiv.Length < 1)
                 return;
 
-            var dialog = new MetroDialog();
+            var dialog = new Dialog.Dialog();
             dialog.Title = "Add New Data Collector";
             dialog.QuestionText = "Please give a name to the new data collector.";
 
@@ -528,12 +582,15 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Open therapist window
+        /// </summary>
         public void OpenAddTherapistWindow()
         {
             if (_group == null || _group.Length < 1 || _indiv == null | _indiv.Length < 1)
                 return;
 
-            var dialog = new MetroDialog();
+            var dialog = new Dialog.Dialog();
             dialog.Title = "Add New Therapist";
             dialog.QuestionText = "Please give a name to the new therapist.";
 
@@ -561,6 +618,9 @@ namespace DataTracker.ViewModel
 
         }
 
+        /// <summary>
+        /// Interface method
+        /// </summary>
         public void GroupChangeInterfaceMethod(string value)
         {
             _group = value;
@@ -578,6 +638,9 @@ namespace DataTracker.ViewModel
             _indiv = _eval = _cond = _keys = _collect = "";
         }
 
+        /// <summary>
+        /// Interface method
+        /// </summary>
         public void IndividualChangeInterfaceMethod(string value)
         {
             _indiv = value;
@@ -601,6 +664,9 @@ namespace DataTracker.ViewModel
             therapistListViewModel.RefreshRepository(_group, _indiv);
         }
 
+        /// <summary>
+        /// Interface method
+        /// </summary>
         public void EvaluationChangeInterfaceMethod(string value)
         {
             _eval = value;
@@ -610,20 +676,31 @@ namespace DataTracker.ViewModel
             _cond = "";
         }
 
+        /// <summary>
+        /// Interface method
+        /// </summary>
         public void ConditionChangeInterfaceMethod(string value)
         {
             _cond = value;
         }
 
+        /// <summary>
+        /// Interface method
+        /// </summary>
         public void CollectorChangeInterfaceMethod(string value)
         {
             _collect = value;
         }
 
+        /// <summary>
+        /// Interface method
+        /// </summary>
         public void KeyboardChangeInterfaceMethod(KeyboardStorage value)
         {
             if (value == _keyStorage)
+            {
                 return;
+            }
 
             _keys = value.name;
             _keyStorage.frequencyKeys = value.frequencyKeys;
@@ -632,11 +709,18 @@ namespace DataTracker.ViewModel
             DurationKeys = value.durationKeys;
         }
 
+        /// <summary>
+        /// Interface method
+        /// </summary>
+        /// <param name="value"></param>
         public void TherapistChangeInterfaceMethod(string value)
         {
             _ther = value;
         }
 
+        /// <summary>
+        /// Session counter
+        /// </summary>
         public void CountSessions()
         {
             try
@@ -665,13 +749,20 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// File counting method
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         static IEnumerable<string> GetFiles(string path)
         {
             Queue<string> queue = new Queue<string>();
             queue.Enqueue(path);
+
             while (queue.Count > 0)
             {
                 path = queue.Dequeue();
+
                 try
                 {
                     foreach (string subDir in Directory.GetDirectories(path))
@@ -683,7 +774,9 @@ namespace DataTracker.ViewModel
                 {
                     Console.Error.WriteLine(ex);
                 }
+
                 string[] files = null;
+
                 try
                 {
                     files = Directory.GetFiles(path);
@@ -692,6 +785,7 @@ namespace DataTracker.ViewModel
                 {
                     Console.Error.WriteLine(ex);
                 }
+
                 if (files != null)
                 {
                     for (int i = 0; i < files.Length; i++)

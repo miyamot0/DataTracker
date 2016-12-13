@@ -18,31 +18,52 @@
 
 using System.Windows;
 
-namespace DataTracker
+namespace DataTracker.Dialog
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Dialog.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Dialog : Window
     {
-        public MainWindow()
+
+        /// <summary>
+        /// Title
+        /// </summary>
+        public string TitleString { get; set; }
+
+        /// <summary>
+        /// Question
+        /// </summary>
+        public string QuestionText
+        {
+            set { QuestionTextBox.Text = value; }
+        }
+
+        /// <summary>
+        /// Returned value
+        /// </summary>
+        public string ResponseText
+        {
+            get { return ResponseTextBox.Text; }
+            set { ResponseTextBox.Text = value; }
+        }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public Dialog()
         {
             InitializeComponent();
         }
 
         /// <summary>
-        /// Check for upgrade
+        /// Click button
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (Properties.Settings.Default.UpdateSettings)
-            {
-                Properties.Settings.Default.Upgrade();
-                Properties.Settings.Default.UpdateSettings = false;
-                Properties.Settings.Default.Save();
-            }
+            DialogResult = true;
         }
     }
 }

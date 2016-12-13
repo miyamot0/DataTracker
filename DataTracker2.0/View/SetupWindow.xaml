@@ -5,61 +5,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataTracker.View"
-        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         Title="SetupWindow" 
         Height="750" 
         Width="850" 
-        MinHeight="750" 
-        MinWidth="750" 
         ResizeMode="NoResize"
-        BorderThickness="0" 
-        SizeToContent="WidthAndHeight">
+        BorderThickness="0"
+        Style="{DynamicResource BackgroundStyle}">
 
     <Window.Resources>
-        <!-- This storyboard will make the image grow to double its size in 0.2 seconds -->
-        <Storyboard x:Key="expandStoryboard">
-            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
-                             To="1.1" 
-                             Duration="0:0:0.2" />
-            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
-                             To="1.1" 
-                             Duration="0:0:0.2" />
-        </Storyboard>
-
-        <!-- This storyboard will make the image revert to its original size -->
-        <Storyboard x:Key="shrinkStoryboard">
-            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
-                             To="1" 
-                             Duration="0:0:0.2" />
-            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
-                             To="1" 
-                             Duration="0:0:0.2" />
-        </Storyboard>
-
-        <SolidColorBrush x:Key="LightGrayTextContrast">#747a79</SolidColorBrush>
-        <SolidColorBrush x:Key="DarkBlackBackground">#1c2120</SolidColorBrush>
-        <SolidColorBrush x:Key="DarkerBlackBackground">#111313</SolidColorBrush>
-
         <Thickness x:Key="MarginResource" Left="10"  Top="0" Right="10" Bottom="0" />
         <Thickness x:Key="MarginResourceButton" Left="10"  Top="5" Right="10" Bottom="5" />
-
-        <Style TargetType="{x:Type GridViewColumnHeader}" x:Key="MyHeaderStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
-                        <Border BorderThickness="0,0,0,1" BorderBrush="Transparent" Background="Transparent">
-                            <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="5,5,5,0" Width="{TemplateBinding Width}" TextAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Width" Value="Auto" />
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}" />
-        </Style>
 
         <Style x:Key="GridViewColumnHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Background" Value="Transparent" />
@@ -138,100 +94,9 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-
-        <Style x:Key="BaseButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="#cccccc"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Name="Chrome"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                SnapsToDevicePixels="true">
-                            <ContentPresenter Name="Presenter" Margin="{TemplateBinding Padding}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    RecognizesAccessKey="True"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Foreground" Value="#333333" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#dddddd" />
-                                <Setter Property="BorderBrush" Value="#cccccc" />
-                                <Setter Property="Foreground" Value="#333333" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#1ba1e2" />
-                                <Setter Property="BorderBrush" Value="#1ba1e2"/>
-                                <Setter Property="Foreground" Value="#ffffff"/>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="true">
-                                <Setter TargetName="Chrome" Property="BorderBrush" Value="#1ba1e2" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Trigger.EnterActions>
-                        <BeginStoryboard Storyboard="{StaticResource expandStoryboard}" />
-                    </Trigger.EnterActions>
-                    <Trigger.ExitActions>
-                        <BeginStoryboard Storyboard="{StaticResource shrinkStoryboard}" />
-                    </Trigger.ExitActions>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="BaseTextTitleStyle" TargetType="{x:Type Label}">
-            <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}"/>
-            <Setter Property="FontSize" Value="22" />
-        </Style>
     </Window.Resources>
 
     <Grid>
-        <Grid.Background>
-            <DrawingBrush Viewport="0,0,16,16" ViewportUnits="Absolute" Stretch="None" TileMode="Tile" >
-                <DrawingBrush.Drawing>
-                    <DrawingGroup>
-                        <GeometryDrawing Brush="{DynamicResource DarkerBlackBackground}">
-                            <GeometryDrawing.Geometry>
-                                <GeometryGroup>
-                                    <RectangleGeometry Rect="0,0,8,8"/>
-                                    <RectangleGeometry Rect="8,8,8,8"/>
-                                </GeometryGroup>
-                            </GeometryDrawing.Geometry>
-                        </GeometryDrawing>
-                        <GeometryDrawing Brush="{DynamicResource DarkBlackBackground}">
-                            <GeometryDrawing.Geometry>
-                                <GeometryGroup>
-                                    <RectangleGeometry Rect="8,0,8,8"/>
-                                    <RectangleGeometry Rect="0,8,8,8"/>
-                                </GeometryGroup>
-                            </GeometryDrawing.Geometry>
-                        </GeometryDrawing>
-                    </DrawingGroup>
-                </DrawingBrush.Drawing>
-            </DrawingBrush>
-        </Grid.Background>
-
         <Grid.RowDefinitions >
             <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
