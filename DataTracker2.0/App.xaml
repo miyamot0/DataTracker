@@ -25,31 +25,31 @@
             
             <!-- Default Windows Background -->
             <Style x:Key="BackgroundStyle" TargetType="Window">
-                <Setter Property="Background" Value="#C3D9F0" />
+                <Setter Property="Background" Value="#4E5660" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
 
             <!-- Default Text color -->
-            <SolidColorBrush x:Key="LightGrayTextContrast">#747a79</SolidColorBrush>
+            <SolidColorBrush x:Key="LightGrayTextContrast">#EDEEEF</SolidColorBrush>
 
             <!-- This storyboard will make the image grow to double its size in 0.2 seconds -->
             <Storyboard x:Key="expandStoryboard">
                 <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
                              To="1.1" 
-                             Duration="0:0:0.2" />
+                             Duration="0:0:0.1" />
                 <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
                              To="1.1" 
-                             Duration="0:0:0.2" />
+                             Duration="0:0:0.1" />
             </Storyboard>
 
             <!-- This storyboard will make the image revert to its original size -->
             <Storyboard x:Key="shrinkStoryboard">
                 <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" 
                              To="1" 
-                             Duration="0:0:0.2" />
+                             Duration="0:0:0.1" />
                 <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" 
                              To="1" 
-                             Duration="0:0:0.2" />
+                             Duration="0:0:0.1" />
             </Storyboard>
 
             <Style TargetType="{x:Type GridViewColumnHeader}" x:Key="MyHeaderStyle">
@@ -72,11 +72,14 @@
             <Style x:Key="BaseButtonStyle" TargetType="{x:Type Button}">
                 <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                 <Setter Property="Background" Value="#ECF3FA"/>
+                <Setter Property="FontSize" Value="16"/>
                 <Setter Property="BorderBrush" Value="#cccccc"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}"/>
+                <Setter Property="Foreground" Value="#5F666F"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
                 <Setter Property="RenderTransform">
                     <Setter.Value>

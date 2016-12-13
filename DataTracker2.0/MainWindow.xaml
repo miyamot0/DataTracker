@@ -63,13 +63,13 @@
                        Style="{DynamicResource BaseTextTitleStyle}"/>
         </Viewbox>
 
-        <Label
+        <Label 
             Foreground="{DynamicResource LightGrayTextContrast}"
             Grid.Row="2"
             Grid.RowSpan="3"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            FontSize="12"
+            FontSize="14"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
             VerticalContentAlignment="Bottom"
@@ -81,48 +81,22 @@
 
         <Button x:Name="settingsButton" 
                 Content="Settings" 
-                Visibility="Visible"
                 Command="{Binding EnterSettingsCommand}" 
-                HorizontalAlignment="Stretch"
                 Margin="10,20,10,20"
                 MaxHeight="120"
-                VerticalAlignment="Stretch" 
-                VerticalContentAlignment="Center"
                 Grid.Column="1" 
                 Grid.Row="4" 
-                FontSize="22"
-                Grid.ColumnSpan="1" 
-                Style="{DynamicResource BaseButtonStyle}">
-        </Button>
-
-        <Button x:Name="testButton" 
-                Content="Launch Test WIndow" 
-                Visibility="Hidden"
-                Command="{Binding TestCommand}" 
-                HorizontalAlignment="Stretch"
-                Margin="10,20,10,20"
-                MaxHeight="120"
-                VerticalAlignment="Stretch" 
-                VerticalContentAlignment="Center"
-                Grid.Column="1" 
-                Grid.Row="4" 
-                FontSize="22"
                 Grid.ColumnSpan="1" 
                 Style="{DynamicResource BaseButtonStyle}">
         </Button>
 
         <Button x:Name="testSettings" 
                 Content="Reliability" 
-                Visibility="Visible"
                 Command="{Binding EnterReliabilityCommand}" 
-                HorizontalAlignment="Stretch"
                 Margin="10,20,10,20"
                 MaxHeight="120"
-                VerticalAlignment="Stretch" 
-                VerticalContentAlignment="Center"
                 Grid.Column="1" 
                 Grid.Row="5" 
-                FontSize="22"
                 Grid.ColumnSpan="1" 
                 Style="{DynamicResource BaseButtonStyle}">
         </Button>
@@ -130,12 +104,9 @@
         <Button x:Name="buttonParticipant" 
                 Content="Select Client" 
                 Command="{Binding EnterSessionBuilderCommand}" 
-                HorizontalAlignment="Stretch" 
                 Margin="10,20,10,20" 
-                VerticalAlignment="Stretch" 
                 Grid.Column="1" 
                 Grid.Row="6" 
-                FontSize="22"
                 Grid.ColumnSpan="1" 
                 Style="{DynamicResource BaseButtonStyle}"/>
         

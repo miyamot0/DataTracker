@@ -58,13 +58,12 @@
                FontSize="32" 
                Style="{DynamicResource BaseTextTitleStyle}"/>
 
-        <Button 
-            x:Name="buttonSource" 
+        <Button x:Name="buttonSource" 
             Content="Set Data Source" 
             Command="{Binding SettingsSaveLocationDialog}" 
-            HorizontalAlignment="Stretch" Margin="10,20,10,20" 
-            VerticalAlignment="Stretch" 
-            Grid.Column="1" Grid.Row="2" 
+            Margin="10,20,10,20" 
+            Grid.Column="1" 
+            Grid.Row="2" 
             Grid.ColumnSpan="1" 
             Style="{DynamicResource BaseButtonStyle}"/>
         
@@ -77,38 +76,15 @@
                  Margin="10,10,10,10" 
                  Grid.Row="2" 
                  TextWrapping="Wrap" 
+                 FontSize="16"
                  VerticalAlignment="Center" 
                  VerticalContentAlignment="Center" 
                  IsEnabled="False" />
-
-        <Button x:Name="buttonSettings1" 
-                Visibility="Hidden" 
-                Content="STUB 1" 
-                HorizontalAlignment="Stretch" 
-                Margin="10,20,10,20" 
-                VerticalAlignment="Stretch" 
-                Grid.Column="1" 
-                Grid.Row="3" 
-                Grid.ColumnSpan="1" 
-                Style="{DynamicResource BaseButtonStyle}"/>
-        
-        <Button x:Name="buttonSettings2" 
-                Visibility="Hidden" 
-                Content="STUB 2" 
-                HorizontalAlignment="Stretch" 
-                Margin="10,20,10,20" 
-                VerticalAlignment="Stretch" 
-                Grid.Column="1" 
-                Grid.Row="4" 
-                Grid.ColumnSpan="1" 
-                Style="{DynamicResource BaseButtonStyle}"/>
-        
+               
         <Button x:Name="buttonSave" 
                 Content="Save Settings" 
                 Command="{Binding SettingsCloseWindow}" 
-                HorizontalAlignment="Stretch" 
                 Margin="10,20,10,20" 
-                VerticalAlignment="Stretch" 
                 Grid.Column="2" 
                 Grid.Row="5" 
                 Grid.ColumnSpan="1" 
