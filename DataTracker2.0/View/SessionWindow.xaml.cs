@@ -1,4 +1,22 @@
-﻿using DataTracker.Model;
+﻿/*
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
+using DataTracker.Model;
 using DataTracker.ViewModel;
 using NPOI.SS.UserModel;
 using System;
@@ -14,6 +32,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using DataTracker.Dialog;
+using DataTracker.Tags;
 
 namespace DataTracker.View
 {
@@ -39,48 +58,12 @@ namespace DataTracker.View
         private string scheduleThreeTime = string.Empty;
         private string[] currentTimes;
 
-        public class DurationModels
-        {
-            public bool Recording { get; set; }
-            public Stopwatch Timer { get; set; }
-            public TimeSpan TimeSpanOutput { get; set; }
-            public string PastTime { get; set; }
-            public int ActiveIntervals = 0;
-            public int TotalIntervals = 0;
-            public bool WasActive = false;
-            public bool WasObserved = false;
-        }
-
-        public class KeyEventTag
-        {
-            public string KeyString { get; set; }
-            public Key KeyCode { get; set; }
-            public KeyTags KeyTag { get; set; }
-            public ScheduleTags ScheduleTag { get; set; }
-            public TimeSpan TimePressed { get; set; }
-        }
-
-        public enum KeyTags
-        {
-            Duration,
-            Frequency,
-            Schedule
-        }
-
-        public enum ScheduleTags
-        {
-            One,
-            Two,
-            Three
-        }
-
         public class MultipleSchedules
         {
             public DurationModels[] mKeyModels { get; set; }
         }
 
         private ObservableCollection<KeyEventTag> _list;
-
         public ObservableCollection<KeyEventTag> KeyEventList
         {
             get { return _list; }
@@ -131,8 +114,6 @@ namespace DataTracker.View
         bool durSchedThreeWasActive = false;
         // Duration objects END
 
-        //XSSFWorkbook hssfworkbook;
-
         ObservableCollection<ProgressMonitor> mListItems = new ObservableCollection<ProgressMonitor>();
 
         ProgressListViewModel mProgModel = new ProgressListViewModel();
@@ -164,6 +145,10 @@ namespace DataTracker.View
 
         }
 
+        /// <summary>
+        /// Set keys to VM
+        /// </summary>
+        /// <param name="mPassedKeys"></param>
         public void SetKeys(KeyboardStorage mPassedKeys)
         {
             mKeyboards = mPassedKeys;
@@ -269,9 +254,13 @@ namespace DataTracker.View
                         fileStream.Close();
                 }
             }
-
         }
         
+        /// <summary>
+        /// Closing window delegate
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             if (stopWatch.IsRunning)
@@ -325,10 +314,9 @@ namespace DataTracker.View
                         tempFreqIntervalsSchThree[mInt] = 0;
                     }
 
-
                     // END FREQUENCY LOG
 
-                    // Main Dur Ararys
+                    // Main Dur Arrays
                     for (int counter = 0; counter < mMultiScheds[0].mKeyModels.Length; counter++)
                     {
                         // Only get Actives for Main
@@ -374,7 +362,6 @@ namespace DataTracker.View
                         mMultiScheds[2].mKeyModels[counter].WasObserved = false;
 
                         // Actives for Sched 3
-
                         if (mMultiScheds[3].mKeyModels[counter].WasActive)
                         {
                             mMultiScheds[3].mKeyModels[counter].ActiveIntervals = mMultiScheds[3].mKeyModels[counter].ActiveIntervals + 1;
@@ -450,7 +437,8 @@ namespace DataTracker.View
                         tempdurationIntervalsSchTwo[mInt] = 0;
                         tempdurationIntervalsSchThree[mInt] = 0;
                     }
-                                                                /*
+
+                    /*
 
                     hssfworkbook = new XSSFWorkbook();
 
@@ -546,9 +534,13 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Tick updates
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void dt_Tick(object sender, EventArgs e)
-        {
-            
+        {            
             // Frequency interval trips
             if (!freqSchedOneWasActive && scheduleOne.IsRunning)
             {
@@ -1200,6 +1192,11 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Get Time
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public TimeSpan GetDurationTimeStampKey(int index)
         {
             Key mKey = mKeyboards.durationKeys[index].KeyCode;
@@ -1229,6 +1226,11 @@ namespace DataTracker.View
             return tempHolder;
         }
 
+        /// <summary>
+        /// Get Time Total
+        /// </summary>
+        /// <param name="sched"></param>
+        /// <returns></returns>
         public TimeSpan GetScheduleTotalTime(int sched)
         {
             TimeSpan tempHolder = stopWatch.Elapsed;
@@ -1256,6 +1258,10 @@ namespace DataTracker.View
             return mTotalTime;
         }
 
+        /// <summary>
+        /// Get time, duration
+        /// </summary>
+        /// <param name="index"></param>
         public void GetDurationSumTimeKey(int index)
         {
             Key mKey = mKeyboards.durationKeys[index].KeyCode;
@@ -1287,6 +1293,13 @@ namespace DataTracker.View
             currentTimes[index] = string.Format("{0:00}:{1:00}.{2:00}", mTotalTime.Minutes, mTotalTime.Seconds, mTotalTime.Milliseconds / 10);
         }
 
+        /// <summary>
+        /// Write out results, freq
+        /// </summary>
+        /// <param name="sheetPage"></param>
+        /// <param name="mListView"></param>
+        /// <param name="keyDefs"></param>
+        /// <param name="intervalList"></param>
         public void WriteFreqIntervalResults(ISheet sheetPage, ListView mListView, ObservableCollection<KeyDefinitions> keyDefs, List<int[]> intervalList)
         {
             IRow currRow = sheetPage.CreateRow(0);
@@ -1313,6 +1326,13 @@ namespace DataTracker.View
 
         }
 
+        /// <summary>
+        /// Write out results, duration
+        /// </summary>
+        /// <param name="sheetPage"></param>
+        /// <param name="mListView"></param>
+        /// <param name="keyDefs"></param>
+        /// <param name="intervalList"></param>
         public void WriteDurIntervalResults(ISheet sheetPage, ListView mListView, ObservableCollection<KeyDefinitions> keyDefs, List<double[]> intervalList)
         {
             IRow currRow = sheetPage.CreateRow(0);
@@ -1322,7 +1342,7 @@ namespace DataTracker.View
             {
                 currRow.CreateCell(cntOut).SetCellValue(keyDefs[cntOut].KeyName);
             }
-            //mKeyboards.frequencyKeys
+
             cntOut = 1;
 
             foreach (double[] holder in intervalList)
@@ -1338,6 +1358,10 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Get frequency key names
+        /// </summary>
+        /// <returns></returns>
         public string[] GetFrequencyKeys()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1351,6 +1375,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get duration key names
+        /// </summary>
+        /// <returns></returns>
         public string[] GetDurationKeys()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1363,7 +1391,11 @@ namespace DataTracker.View
 
             return mResult;
         }
-
+        
+        /// <summary>
+        /// Get frequency key counts
+        /// </summary>
+        /// <returns></returns>
         public string[] GetMainFrequencyCounts()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1377,6 +1409,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get frequency duration
+        /// </summary>
+        /// <returns></returns>
         public string[] GetMainFrequencyTotals()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1391,6 +1427,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get frequency RPM
+        /// </summary>
+        /// <returns></returns>
         public string[] GetMainFrequencyRPM()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1405,6 +1445,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get duration duration
+        /// </summary>
+        /// <returns></returns>
         public string[] GetMainDurationTime()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1418,12 +1462,15 @@ namespace DataTracker.View
                 mTime += mMultiScheds[3].mKeyModels[i].Timer.Elapsed.TotalSeconds;
 
                 mResult[i + 1] = mTime.ToString("0.##");
-//                mResult[i + 1] = mMultiScheds[0].mKeyModels[i].Timer.Elapsed.TotalSeconds.ToString("0.##");
             }
 
             return mResult;
         }
 
+        /// <summary>
+        /// Get duration, total time
+        /// </summary>
+        /// <returns></returns>
         public string[] GetMainDurationTotalTime()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1437,6 +1484,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get duration percent of session, main schedule
+        /// </summary>
+        /// <returns></returns>
         public string[] GetMainDurationPercentageSession()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1455,6 +1506,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Schedule one, logged time
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchOneDurationTime()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1468,6 +1523,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Schedule one, total time
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchOneDurationTotalTime()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1481,6 +1540,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get duration percent of session, schedule 1
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchOneDurationPercentageSession()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1494,6 +1557,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Schedule two, logged time
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchTwoDurationTime()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1507,6 +1574,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Schedule two, total time
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchTwoDurationTotalTime()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1520,6 +1591,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get duration percent of session, schedule 2
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchTwoDurationPercentageSession()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1533,6 +1608,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Schedule three, logged time
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchThreeDurationTime()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1546,6 +1625,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Schedule three, total time
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchThreeDurationTotalTime()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1559,6 +1642,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get duration percent of session, schedule 3
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchThreeDurationPercentageSession()
         {
             string[] mResult = new string[mKeyboards.durationKeys.Count + 1];
@@ -1572,6 +1659,11 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get frequency counts
+        /// </summary>
+        /// <param name="mKey"></param>
+        /// <returns></returns>
         public int GetFrequencyCounts(Key mKey)
         {
             int frequencyCount = 0;
@@ -1587,6 +1679,12 @@ namespace DataTracker.View
             return frequencyCount;
         }
 
+        /// <summary>
+        /// Get frequency counts, by schedule
+        /// </summary>
+        /// <param name="mKey"></param>
+        /// <param name="sTag"></param>
+        /// <returns></returns>
         public int GetFrequencyCounts(Key mKey, ScheduleTags sTag)
         {
             int frequencyCount = 0;
@@ -1602,6 +1700,10 @@ namespace DataTracker.View
             return frequencyCount;
         }
 
+        /// <summary>
+        /// Get frequency counts, schedule one
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchOneFrequencyCounts()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1615,6 +1717,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get schedule one duration
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchOneFrequencyTotals()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1629,6 +1735,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get frequency rate, schedule one
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchOneFrequencyRPM()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1643,6 +1753,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get frequency counts, schedule two
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchTwoFrequencyCounts()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1656,6 +1770,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get schedule two duration
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchTwoFrequencyTotals()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1670,6 +1788,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get frequency rate, schedule two
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchTwoFrequencyRPM()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1684,6 +1806,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get frequency counts, schedule three
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchThreeFrequencyCounts()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1697,6 +1823,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get schedule three duration
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchThreeFrequencyTotals()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1711,6 +1841,10 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Get frequency rate, schedule one
+        /// </summary>
+        /// <returns></returns>
         public string[] GetSchThreeFrequencyRPM()
         {
             string[] mResult = new string[mKeyboards.frequencyKeys.Count + 1];
@@ -1725,6 +1859,16 @@ namespace DataTracker.View
             return mResult;
         }
 
+        /// <summary>
+        /// Write out results 
+        /// </summary>
+        /// <param name="sheetPage"></param>
+        /// <param name="mLocalFreqList"></param>
+        /// <param name="mLocalWatch"></param>
+        /// <param name="mLocalDurList"></param>
+        /// <param name="mMulSchIndiv"></param>
+        /// <param name="isGlobal"></param>
+        /// <param name="scheduleNumber"></param>
         public void WriteResults(ISheet sheetPage, List<int[]> mLocalFreqList, Stopwatch mLocalWatch, List<double[]> mLocalDurList, MultipleSchedules mMulSchIndiv, bool isGlobal, int scheduleNumber)
         {
             IRow currRow = sheetPage.CreateRow(0);
@@ -1908,6 +2052,12 @@ namespace DataTracker.View
             sheetPage.AutoSizeColumn(1);
         }
 
+        /// <summary>
+        /// Get # of intervals
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="mList"></param>
+        /// <returns></returns>
         public int getIntervalCounts(int index, List<int[]> mList)
         {
             int counter = 0;
@@ -1920,6 +2070,12 @@ namespace DataTracker.View
             return counter;
         }
 
+        /// <summary>
+        /// Get freq sum, by key index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="mList"></param>
+        /// <returns></returns>
         public int getFrequencySum(int index, List<int[]> mList)
         {
             int count = 0;
@@ -1932,6 +2088,10 @@ namespace DataTracker.View
             return count;
         }
 
+        /// <summary>
+        /// Decrease freq count in temp array, while running
+        /// </summary>
+        /// <param name="index"></param>
         public void decreaseTempFreqArrayFrequency(int index)
         {
             tempFreqIntervalsMain[index] = tempFreqIntervalsMain[index] - 1;
@@ -1950,6 +2110,10 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Increase freq count in temp array, while running
+        /// </summary>
+        /// <param name="index"></param>
         public void increaseTempFreqArrayFrequency(int index)
         {
             tempFreqIntervalsMain[index] = tempFreqIntervalsMain[index] + 1;
@@ -1968,6 +2132,10 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Decrease dur count in temp array, while running
+        /// </summary>
+        /// <param name="index"></param>
         public void increaseTempDurArrayFrequency(int index)
         {
             mMultiScheds[0].mKeyModels[index].WasActive = true;
@@ -1986,6 +2154,10 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Update frequency count in list
+        /// </summary>
+        /// <param name="index"></param>
         public void updateListAtIndex(int index)
         {
             mKeyViewModel.AllFrequencies[index].Counts = mKeyViewModel.AllFrequencies[index].Counts + 1;
@@ -1993,9 +2165,13 @@ namespace DataTracker.View
             keyFrequency.Items.Refresh();
         }
 
+        /// <summary>
+        /// Update frequency listview
+        /// </summary>
+        /// <param name="oldKey"></param>
+        /// <param name="newKey"></param>
         public void updateListAtIndex(Key oldKey, Key newKey)
         {
-
             int oldIndex = Array.FindIndex(mKeysF, row => row.Equals(oldKey));
             int newIndex = Array.FindIndex(mKeysF, row => row.Equals(newKey));
 
@@ -2010,6 +2186,9 @@ namespace DataTracker.View
             progressBox.Items.Refresh();
         }
 
+        /// <summary>
+        /// Update button, for running
+        /// </summary>
         public void UpdateButton()
         {
             if (!stopWatch.IsRunning)
@@ -2035,6 +2214,11 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Fire events, tally clicks, on keydowns
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Tab && !stopWatch.IsRunning)
@@ -2436,14 +2620,10 @@ namespace DataTracker.View
 
                 mListItems.Add(mAdd);
 
-                //mListItems.Add(mAdd);
-
                 // Updating UI
-
                 Decorator border = VisualTreeHelper.GetChild(progressBox, 0) as Decorator;
                 ScrollViewer scrollViewer = border.Child as ScrollViewer;
                 scrollViewer.ScrollToBottom();
-
                 // Updating UI END
 
                 if (mMultiScheds[0].mKeyModels[mIndex].Recording)
@@ -2474,11 +2654,21 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Replace button call
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Replace_Click(object sender, RoutedEventArgs e)
         {
             UpdateButton();
         }
 
+        /// <summary>
+        /// Resize button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (hideTaskBar)
@@ -2580,6 +2770,9 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Resize listviews on start, resize
+        /// </summary>
         public void ResizeListViews()
         {
             double remainingSpace = progressBox.ActualWidth;
@@ -2609,52 +2802,16 @@ namespace DataTracker.View
                 (keyFrequency.View as GridView).Columns[1].Width = Math.Ceiling(remainingSpace / 3);
                 (keyFrequency.View as GridView).Columns[2].Width = Math.Ceiling(remainingSpace / 3);
             }
-
         }
 
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Call resize listview
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ResizeListViews();
-        }
-
-        class KeyboardDualListViewModel : ViewModelBase
-        {
-            public ObservableCollection<KeyDefinitions> _durations;
-
-            public ObservableCollection<KeyDefinitions> AllDurations
-            {
-                get { return _durations; }
-                set
-                {
-                    _durations = value;
-                    OnPropertyChanged("AllKeyboards");
-                }
-            }
-
-            public ObservableCollection<KeyDefinitions> _frequencies;
-
-            public ObservableCollection<KeyDefinitions> AllFrequencies
-            {
-                get { return _frequencies; }
-                set
-                {
-                    _frequencies = value;
-                    OnPropertyChanged("AllFrequencies");
-                }
-            }
-
-            public void IncrementFrequency(int index)
-            {
-
-            }
-
-            public KeyboardDualListViewModel()
-            {
-                if (_durations == null)
-                    _durations = new ObservableCollection<KeyDefinitions>();
-                if (_frequencies == null)
-                    _frequencies = new ObservableCollection<KeyDefinitions>();
-            }
         }
     }
 }

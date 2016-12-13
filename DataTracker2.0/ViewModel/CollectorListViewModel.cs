@@ -1,28 +1,40 @@
-﻿using DataTracker.DataAccess;
+﻿/*
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
+using DataTracker.DataAccess;
 using DataTracker.Model;
 using DataTracker.Utilities;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Input;
 
 namespace DataTracker.ViewModel
 {
     class CollectorListViewModel : ViewModelBase
     {
-        RelayCommand _invasionCommand;
-
-        public CollectorRepository _collectorRepository;
-        private ObservableCollection<Collector> _collectorList;
-
-        string _collector;
-
         public InterfaceSetup mInt;
 
+        public CollectorRepository _collectorRepository;
+
+        private string _collector;
         public string CollectorSelection
         {
             get { return _collector; }
-
             set
             {
                 _collector = value;
@@ -33,6 +45,7 @@ namespace DataTracker.ViewModel
             }
         }
 
+        private ObservableCollection<Collector> _collectorList;
         public ObservableCollection<Collector> AllCollectors
         {
             get { return _collectorList; }
@@ -43,6 +56,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public CollectorListViewModel()
         {
             if (_collectorRepository == null)
@@ -50,19 +66,26 @@ namespace DataTracker.ViewModel
                 _collectorRepository = new CollectorRepository();
             }
 
-            this._collectorList = _collectorRepository.GetCollectors();
-            this.AllCollectors = _collectorRepository.GetCollectors();
+            _collectorList = _collectorRepository.GetCollectors();
+            AllCollectors = _collectorRepository.GetCollectors();
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         protected override void OnDispose()
         {
-            this.AllCollectors.Clear();
+            AllCollectors.Clear();
         }
 
+        /// <summary>
+        /// Reparse directory
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="indivName"></param>
         public void RefreshRepository(string groupName, string indivName)
-        {
-            
-            var target = DataTracker.Properties.Settings.Default.SaveLocation + "\\" + groupName + "\\" + indivName + "\\DataCollectors.json";
+        {            
+            var target = Properties.Settings.Default.SaveLocation + "\\" + groupName + "\\" + indivName + "\\DataCollectors.json";
 
             if (File.Exists(@target))
             {
@@ -77,61 +100,6 @@ namespace DataTracker.ViewModel
                 }
             }
             
-        }
-
-        public ICommand InvasionCommand
-        {
-            get
-            {
-                if (_invasionCommand == null)
-                {
-                    _invasionCommand = new RelayCommand(param => this.InvasionCommandExecute(), param => this.InvasionCommandCanExecute);
-                }
-                return _invasionCommand;
-            }
-        }
-
-        void InvasionCommandExecute()
-        {
-            //bool isInvasion = true;
-
-            foreach (Collector emp in this.AllCollectors)
-            {
-                /*
-                System.Console.WriteLine(emp.GroupName.Trim().ToLower());
-
-                if (emp.LastName.Trim().ToLower() == "smith")
-                {
-                    isInvasion = false;
-                }
-                */
-            }
-
-            /*
-            if (isInvasion)
-            {
-                System.Console.WriteLine("True out");
-                BackgroundBrush = new SolidColorBrush(Colors.Green);
-            }
-            else
-            {
-                System.Console.WriteLine("False out");
-                BackgroundBrush = new SolidColorBrush(Colors.White);
-            }
-            */
-
-        }
-
-        bool InvasionCommandCanExecute
-        {
-            get
-            {
-                if (this.AllCollectors.Count == 0)
-                {
-                    return false;
-                }
-                return true;
-            }
         }
     }
 }

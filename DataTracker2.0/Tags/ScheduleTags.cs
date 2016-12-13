@@ -16,18 +16,12 @@
     along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 */
 
-using System.Windows;
-
-namespace DataTracker.View
+namespace DataTracker.Tags
 {
-    /// <summary>
-    /// Interaction logic for KeyboardScreen.xaml
-    /// </summary>
-    public partial class KeyboardScreen : Window
+    public enum ScheduleTags
     {
-        public KeyboardScreen()
-        {
-            InitializeComponent();
-        }
+        One,
+        Two,
+        Three
     }
 }

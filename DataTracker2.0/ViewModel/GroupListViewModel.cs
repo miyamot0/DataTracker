@@ -1,25 +1,38 @@
-﻿using DataTracker.DataAccess;
+﻿/*
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
+using DataTracker.DataAccess;
 using DataTracker.Model;
 using DataTracker.Utilities;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Windows.Input;
 
 namespace DataTracker.ViewModel
 {
     class GroupListViewModel : ViewModelBase, INotifyPropertyChanged
     {
-        RelayCommand _invasionCommand;
-
-        GroupRepository _groupRepository;
-        ObservableCollection<Group> _groupList;
-
-        Group _group;
-
         public InterfaceSetup mInt;
 
+        GroupRepository _groupRepository;
+
+        private Group _group;
         public Group GroupSelection
         {
             get { return _group; }
@@ -33,6 +46,7 @@ namespace DataTracker.ViewModel
             }
         }
 
+        private ObservableCollection<Group> _groupList;
         public ObservableCollection<Group> AllGroups
         {
             get { return _groupList; }
@@ -43,6 +57,10 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Public constructor
+        /// </summary>
+        /// <param name="groupRepository"></param>
         public GroupListViewModel(GroupRepository groupRepository)
         {
             if (groupRepository == null)
@@ -51,20 +69,26 @@ namespace DataTracker.ViewModel
             }
 
             _groupRepository = groupRepository;
-            this.AllGroups = new ObservableCollection<Group>(_groupRepository.GetGroups());
-            this._groupList = new ObservableCollection<Group>(_groupRepository.GetGroups());
+            AllGroups = new ObservableCollection<Group>(_groupRepository.GetGroups());
+            _groupList = new ObservableCollection<Group>(_groupRepository.GetGroups());
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         protected override void OnDispose()
         {
-            this.AllGroups.Clear();
+            AllGroups.Clear();
         }
 
+        /// <summary>
+        /// Reparse directory
+        /// </summary>
         public void RefreshRepository()
         {
             AllGroups.Clear();
 
-            var targetDirectory = DataTracker.Properties.Settings.Default.SaveLocation;
+            var targetDirectory = Properties.Settings.Default.SaveLocation;
 
             try
             {
@@ -78,61 +102,6 @@ namespace DataTracker.ViewModel
             catch
             {
 
-            }
-        }
-
-        public ICommand InvasionCommand
-        {
-            get
-            {
-                if (_invasionCommand == null)
-                {
-                    _invasionCommand = new RelayCommand(param => this.InvasionCommandExecute(), param => this.InvasionCommandCanExecute);
-                }
-                return _invasionCommand;
-            }
-        }
-
-        void InvasionCommandExecute()
-        {
-            //bool isInvasion = true;
-
-            foreach (Model.Group emp in this.AllGroups)
-            {
-                /*
-                System.Console.WriteLine(emp.GroupName.Trim().ToLower());
-
-                if (emp.LastName.Trim().ToLower() == "smith")
-                {
-                    isInvasion = false;
-                }
-                */
-            }
-
-            /*
-            if (isInvasion)
-            {
-                System.Console.WriteLine("True out");
-                BackgroundBrush = new SolidColorBrush(Colors.Green);
-            }
-            else
-            {
-                System.Console.WriteLine("False out");
-                BackgroundBrush = new SolidColorBrush(Colors.White);
-            }
-            */
-
-        }
-
-        bool InvasionCommandCanExecute
-        {
-            get
-            {
-                if (this.AllGroups.Count == 0)
-                {
-                    return false;
-                }
-                return true;
             }
         }
     }

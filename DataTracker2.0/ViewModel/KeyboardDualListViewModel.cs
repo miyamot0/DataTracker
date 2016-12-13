@@ -21,42 +21,37 @@ using System.Collections.ObjectModel;
 
 namespace DataTracker.ViewModel
 {
-    public class ProgressListViewModel : ViewModelBase
+    class KeyboardDualListViewModel : ViewModelBase
     {
-        private ObservableCollection<ProgressMonitor> _list;
-        public ObservableCollection<ProgressMonitor> AllListItems
+        private ObservableCollection<KeyDefinitions> _durations;
+        public ObservableCollection<KeyDefinitions> AllDurations
         {
-            get { return _list; }
+            get { return _durations; }
             set
             {
-                _list = value;
-                OnPropertyChanged("AllListItems");
+                _durations = value;
+                OnPropertyChanged("AllKeyboards");
             }
         }
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public ProgressListViewModel()
+        private ObservableCollection<KeyDefinitions> _frequencies;
+        public ObservableCollection<KeyDefinitions> AllFrequencies
         {
-            AllListItems = new ObservableCollection<ProgressMonitor>();
+            get { return _frequencies; }
+            set
+            {
+                _frequencies = value;
+                OnPropertyChanged("AllFrequencies");
+            }
         }
 
-        /// <summary>
-        /// Add to list
-        /// </summary>
-        /// <param name="mProg"></param>
-        public void AddLatest(ProgressMonitor mProg)
+        public KeyboardDualListViewModel()
         {
-            _list.Add(mProg); 
-        }
+            if (_durations == null)
+                _durations = new ObservableCollection<KeyDefinitions>();
 
-        /// <summary>
-        /// Dispose
-        /// </summary>
-        protected override void OnDispose()
-        {
-            this.AllListItems.Clear();
-        }        
+            if (_frequencies == null)
+                _frequencies = new ObservableCollection<KeyDefinitions>();
+        }
     }
 }

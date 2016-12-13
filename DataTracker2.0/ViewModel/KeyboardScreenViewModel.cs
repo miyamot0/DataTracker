@@ -1,12 +1,28 @@
-﻿using DataTracker.Dialog;
+﻿/*
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
+using DataTracker.Dialog;
+using DataTracker.Model;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace DataTracker.ViewModel
 {
@@ -30,9 +46,10 @@ namespace DataTracker.ViewModel
         ObservableCollection<KeyDefinitions> _frequencyKeys = new ObservableCollection<KeyDefinitions>();
         ObservableCollection<KeyDefinitions> _durationKeys = new ObservableCollection<KeyDefinitions>();
 
-
         KeyDefinitions _selectedFrequencyString;
-
+        /// <summary>
+        /// Selected string, frequency
+        /// </summary>
         public KeyDefinitions SelectedFrequencyString
         {
             get { return _selectedFrequencyString; }
@@ -44,7 +61,9 @@ namespace DataTracker.ViewModel
         }
 
         KeyDefinitions _selectedDurationString;
-
+        /// <summary>
+        /// Selected string, duration
+        /// </summary>
         public KeyDefinitions SelectedDurationString
         {
             get { return _selectedDurationString; }
@@ -55,6 +74,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Frequency keys
+        /// </summary>
         public ObservableCollection<KeyDefinitions> FrequencyKeys
         {
             get { return _frequencyKeys; }
@@ -65,6 +87,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Duration keys
+        /// </summary>
         public ObservableCollection<KeyDefinitions> DurationKeys
         {
             get { return _durationKeys; }
@@ -75,23 +100,14 @@ namespace DataTracker.ViewModel
             }
         }
 
-        public class KeyboardStorage
-        {
-            public List<KeyDefinitions> frequencyKeys { get; set; }
-            public List<KeyDefinitions> durationKeys { get; set; }
-
-            public string name { get; set; }
-        }
-
+        /// <summary>
+        /// Container object
+        /// </summary>
         public KeyboardStorage mReturnedKeys { get; set; }
 
-        public class KeyDefinitions
-        {
-            public string KeyName { get; set; }
-            public string KeyDescription { get; set; }
-            public Key KeyCode { get; set; }
-        }
-
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public KeyboardScreenViewModel()
         {
             this.FrequencyKeyCommand = new RelayCommand(param => FrequencyButton(), param => true);
@@ -102,16 +118,19 @@ namespace DataTracker.ViewModel
 
             this.SaveCommand = new RelayCommand(param => SaveButton(), param => true);
             this.CloseWindow = new RelayCommand(param => SaveButton(), param => true);
-
         }
 
+        /// <summary>
+        /// Check if keys being edited
+        /// </summary>
+        /// <param name="editing"></param>
         public void SetupKeysEditing(bool editing)
         {
             CurrentlyEditing = editing;
 
             if (CurrentlyEditing)
             {
-                string targetDirectory = DataTracker.Properties.Settings.Default.SaveLocation + "\\" + GroupName + "\\" + PatientName + "\\" + FileName + ".json";
+                string targetDirectory = Properties.Settings.Default.SaveLocation + "\\" + GroupName + "\\" + PatientName + "\\" + FileName + ".json";
                 string mObjString = File.ReadAllText(targetDirectory);
 
                 KeyboardStorage deSer = JsonConvert.DeserializeObject<KeyboardStorage>(mObjString);
@@ -128,6 +147,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Add frequency button
+        /// </summary>
         void FrequencyButton()
         {
             var dialog = new AddKeyDialog();
@@ -150,6 +172,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Remove frequency button
+        /// </summary>
         void FrequencyRemoveButton()
         {
             if (SelectedFrequencyString == null || SelectedFrequencyString.KeyDescription.Length < 1)
@@ -165,6 +190,9 @@ namespace DataTracker.ViewModel
             }
         }
         
+        /// <summary>
+        /// Add duration button
+        /// </summary>
         void DurationButton()
         {
             var dialog = new AddKeyDialog();
@@ -187,6 +215,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Remove duration button
+        /// </summary>
         void DurationRemoveButton()
         {
             if (SelectedDurationString == null || SelectedDurationString.KeyDescription.Length < 1)
@@ -202,13 +233,16 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Save file button
+        /// </summary>
         void SaveButton()
         {
             var mainWindow = Utilities.WindowTools.GetWindowRef("KeyboardWindowTag");
 
             KeyboardStorage mStore = new KeyboardStorage();
-            mStore.frequencyKeys = _frequencyKeys.ToList<KeyDefinitions>();
-            mStore.durationKeys = _durationKeys.ToList<KeyDefinitions>();
+            mStore.frequencyKeys = new ObservableCollection<KeyDefinitions>(_frequencyKeys);
+            mStore.durationKeys = new ObservableCollection<KeyDefinitions>(_durationKeys);
             mStore.name = FileName;
 
             mReturnedKeys = mStore;

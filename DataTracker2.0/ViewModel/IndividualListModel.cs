@@ -1,23 +1,36 @@
-﻿using DataTracker.DataAccess;
+﻿/*
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
+using DataTracker.DataAccess;
 using DataTracker.Model;
 using DataTracker.Utilities;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Input;
 
 namespace DataTracker.ViewModel
 {
     class IndividualListModel : ViewModelBase
     {
-        RelayCommand _invasionCommand;
-
-        public IndividualRepository _individualRepository;
-        private ObservableCollection<Individual> _individualList;
-
-        Individual _individual;
-
         public InterfaceSetup mInt;
 
+        public IndividualRepository _individualRepository;
+
+        private Individual _individual;
         public Individual IndividualSelection
         {
             get { return _individual; }
@@ -33,6 +46,7 @@ namespace DataTracker.ViewModel
             }
         }
 
+        private ObservableCollection<Individual> _individualList;
         public ObservableCollection<Individual> AllIndividuals
         {
             get { return _individualList; }
@@ -43,6 +57,9 @@ namespace DataTracker.ViewModel
             }
         }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public IndividualListModel()
         {
             if (_individualRepository == null)
@@ -50,23 +67,34 @@ namespace DataTracker.ViewModel
                 _individualRepository = new IndividualRepository();
             }
 
-            this.AllIndividuals = new ObservableCollection<Individual>(_individualRepository.GetIndividuals());
-            this._individualList = new ObservableCollection<Individual>(_individualRepository.GetIndividuals());
+            AllIndividuals = new ObservableCollection<Individual>(_individualRepository.GetIndividuals());
+            _individualList = new ObservableCollection<Individual>(_individualRepository.GetIndividuals());
         }
 
+        /// <summary>
+        /// Interface update
+        /// </summary>
+        /// <param name="groupName"></param>
         public void IndividualListModelUpdate(string groupName)
         {
             _individualRepository.UpdateRepository(AllIndividuals, groupName);
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         protected override void OnDispose()
         {
-            this.AllIndividuals.Clear();
+            AllIndividuals.Clear();
         }
 
+        /// <summary>
+        /// Reparse directory
+        /// </summary>
+        /// <param name="groupName"></param>
         public void RefreshRepository(string groupName)
         {
-            var targetDirectory = DataTracker.Properties.Settings.Default.SaveLocation + "\\" + groupName;
+            var targetDirectory = Properties.Settings.Default.SaveLocation + "\\" + groupName;
 
             try
             {
@@ -83,61 +111,6 @@ namespace DataTracker.ViewModel
             catch
             {
 
-            }
-        }
-
-        public ICommand InvasionCommand
-        {
-            get
-            {
-                if (_invasionCommand == null)
-                {
-                    _invasionCommand = new RelayCommand(param => this.InvasionCommandExecute(), param => this.InvasionCommandCanExecute);
-                }
-                return _invasionCommand;
-            }
-        }
-
-        void InvasionCommandExecute()
-        {
-            //bool isInvasion = true;
-
-            foreach (Individual emp in this.AllIndividuals)
-            {
-                /*
-                System.Console.WriteLine(emp.GroupName.Trim().ToLower());
-
-                if (emp.LastName.Trim().ToLower() == "smith")
-                {
-                    isInvasion = false;
-                }
-                */
-            }
-
-            /*
-            if (isInvasion)
-            {
-                System.Console.WriteLine("True out");
-                BackgroundBrush = new SolidColorBrush(Colors.Green);
-            }
-            else
-            {
-                System.Console.WriteLine("False out");
-                BackgroundBrush = new SolidColorBrush(Colors.White);
-            }
-            */
-
-        }
-
-        bool InvasionCommandCanExecute
-        {
-            get
-            {
-                if (this.AllIndividuals.Count == 0)
-                {
-                    return false;
-                }
-                return true;
             }
         }
     }

@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
+using System;
 using System.Data;
 using System.Windows;
 
@@ -56,14 +74,21 @@ namespace DataTracker.View
         public string[] schThreeDurMinutes { get; set; }
         public string[] schThreeDurPercent { get; set; }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public ResultsWindow()
         {
             InitializeComponent();
         }
 
-        private void MetroWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        /// <summary>
+        /// Build up window grids
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
             mainTable.Rows.Clear();
             tableOne.Rows.Clear();
             tableTwo.Rows.Clear();
@@ -128,7 +153,6 @@ namespace DataTracker.View
             AddRowsToDurationTable(tableThreeDuration, schThreeDurPercent);
             // END rows
 
-
             // Initialize binds
             topDataGrid.DataContext = mainTable.DefaultView;            
 
@@ -145,6 +169,11 @@ namespace DataTracker.View
             // Display logic
         }
 
+        /// <summary>
+        /// Add keys to datatable
+        /// </summary>
+        /// <param name="mTable"></param>
+        /// <param name="mCols"></param>
         public void AddColumnsToTable(DataTable mTable, string[] mCols)
         {
             foreach (string mCol in mCols)
@@ -163,6 +192,11 @@ namespace DataTracker.View
             }
         }
 
+        /// <summary>
+        /// Add rows to freq table
+        /// </summary>
+        /// <param name="mTable"></param>
+        /// <param name="mRowData"></param>
         public void AddRowsToFrequencyTable(DataTable mTable, string[] mRowData)
         {
             DataRow dr = mTable.NewRow();
@@ -175,6 +209,11 @@ namespace DataTracker.View
             mTable.Rows.Add(dr);
         }
 
+        /// <summary>
+        /// Add rows to dur table
+        /// </summary>
+        /// <param name="mTable"></param>
+        /// <param name="mRowData"></param>
         public void AddRowsToDurationTable(DataTable mTable, string[] mRowData)
         {
             DataRow dr = mTable.NewRow();
@@ -187,33 +226,47 @@ namespace DataTracker.View
             mTable.Rows.Add(dr);
         }
 
+        /// <summary>
+        /// Deselect action when focus lost
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void topDataGrid_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             topDataGrid.UnselectAll();
         }
 
+        /// <summary>
+        /// Save button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
             clearTables();
 
             SaveData = true;
-
             DialogResult = true;
-
             Close();
         }
 
+        /// <summary>
+        /// Discard button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void discardButton_Click(object sender, RoutedEventArgs e)
         {
             clearTables();
 
             SaveData = false;
-
             DialogResult = true;
-
             Close();
         }
 
+        /// <summary>
+        /// Clear all tables
+        /// </summary>
         public void clearTables()
         {
             mainTable.Clear();
@@ -225,6 +278,5 @@ namespace DataTracker.View
             tableTwoDuration.Clear();
             tableThreeDuration.Clear();
         }
-
     }
 }

@@ -23,9 +23,7 @@ namespace DataTracker.ViewModel
 {
     public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
-        protected ViewModelBase()
-        {
-        }
+        protected ViewModelBase() { }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -44,8 +42,6 @@ namespace DataTracker.ViewModel
             this.OnDispose();
         }
 
-        protected virtual void OnDispose()
-        {
-        }
+        protected virtual void OnDispose() { }
     }
 }

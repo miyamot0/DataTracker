@@ -16,18 +16,20 @@
     along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 */
 
-using System.Windows;
+using System;
+using System.Diagnostics;
 
-namespace DataTracker.View
+namespace DataTracker.Model
 {
-    /// <summary>
-    /// Interaction logic for KeyboardScreen.xaml
-    /// </summary>
-    public partial class KeyboardScreen : Window
-    {
-        public KeyboardScreen()
-        {
-            InitializeComponent();
-        }
+    public class DurationModels
+    { 
+        public bool Recording { get; set; }
+        public Stopwatch Timer { get; set; }
+        public TimeSpan TimeSpanOutput { get; set; }
+        public string PastTime { get; set; }
+        public int ActiveIntervals = 0;
+        public int TotalIntervals = 0;
+        public bool WasActive = false;
+        public bool WasObserved = false;
     }
 }

@@ -1,23 +1,36 @@
-﻿using DataTracker.DataAccess;
+﻿/*
+    Copyright 2016 Shawn Gilroy
+
+    This file is part of DataTracker.
+
+    Discounting Model Selector is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    DataTracker is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
+using DataTracker.DataAccess;
 using DataTracker.Model;
 using DataTracker.Utilities;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Input;
 
 namespace DataTracker.ViewModel
 {
     class EvaluationListModel : ViewModelBase
     {
-        RelayCommand _invasionCommand;
-
-        public EvaluationRepository _evaluationRepository;
-        private ObservableCollection<Evaluation> _evaluationList;
-
-        Evaluation _evaluation;
-
         public InterfaceSetup mInt;
 
+        public EvaluationRepository _evaluationRepository;
+        
+        private Evaluation _evaluation;
         public Evaluation EvaluationSelection
         {
             get { return _evaluation; }
@@ -33,6 +46,7 @@ namespace DataTracker.ViewModel
             }
         }
 
+        private ObservableCollection<Evaluation> _evaluationList;
         public ObservableCollection<Evaluation> AllEvaluations
         {
             get { return _evaluationList; }
@@ -43,6 +57,9 @@ namespace DataTracker.ViewModel
             }
         }
         
+        /// <summary>
+        /// Public constructor
+        /// </summary>
         public EvaluationListModel()
         {
             if (_evaluationRepository == null)
@@ -50,35 +67,36 @@ namespace DataTracker.ViewModel
                 _evaluationRepository = new EvaluationRepository();
             }
 
-            this.AllEvaluations = new ObservableCollection<Evaluation>(_evaluationRepository.GetEvaluations());
-            this._evaluationList = new ObservableCollection<Evaluation>(_evaluationRepository.GetEvaluations());
+            AllEvaluations = new ObservableCollection<Evaluation>(_evaluationRepository.GetEvaluations());
+            _evaluationList = new ObservableCollection<Evaluation>(_evaluationRepository.GetEvaluations());
         }
 
+        /// <summary>
+        /// Interface update
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="indivName"></param>
         public void EvaluationListModelUpdate(string groupName, string indivName)
         {
             _evaluationRepository.UpdateRepository(AllEvaluations, groupName, indivName);
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         protected override void OnDispose()
         {
-            this.AllEvaluations.Clear();
+            AllEvaluations.Clear();
         }
 
-        public ICommand InvasionCommand
-        {
-            get
-            {
-                if (_invasionCommand == null)
-                {
-                    _invasionCommand = new RelayCommand(param => this.InvasionCommandExecute(), param => this.InvasionCommandCanExecute);
-                }
-                return _invasionCommand;
-            }
-        }
-
+        /// <summary>
+        /// Reparse directory
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="indivName"></param>
         public void RefreshRepository(string groupName, string indivName)
         {
-            var targetDirectory = DataTracker.Properties.Settings.Default.SaveLocation + "\\" + groupName + "\\" + indivName;
+            var targetDirectory = Properties.Settings.Default.SaveLocation + "\\" + groupName + "\\" + indivName;
 
             try
             {
@@ -91,54 +109,10 @@ namespace DataTracker.ViewModel
                     string[] group = subdirectory.Split('\\');
                     AllEvaluations.Add(Evaluation.CreateEvaluation(group[group.Length - 1]));
                 }
-
             }
             catch
             {
 
-            }
-        }
-
-        void InvasionCommandExecute()
-        {
-            //bool isInvasion = true;
-
-            foreach (Evaluation emp in this.AllEvaluations)
-            {
-                /*
-                System.Console.WriteLine(emp.GroupName.Trim().ToLower());
-
-                if (emp.LastName.Trim().ToLower() == "smith")
-                {
-                    isInvasion = false;
-                }
-                */
-            }
-
-            /*
-            if (isInvasion)
-            {
-                System.Console.WriteLine("True out");
-                BackgroundBrush = new SolidColorBrush(Colors.Green);
-            }
-            else
-            {
-                System.Console.WriteLine("False out");
-                BackgroundBrush = new SolidColorBrush(Colors.White);
-            }
-            */
-
-        }
-
-        bool InvasionCommandCanExecute
-        {
-            get
-            {
-                if (this.AllEvaluations.Count == 0)
-                {
-                    return false;
-                }
-                return true;
             }
         }
     }

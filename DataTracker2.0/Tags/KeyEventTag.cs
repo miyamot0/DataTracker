@@ -16,18 +16,17 @@
     along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 */
 
-using System.Windows;
+using System;
+using System.Windows.Input;
 
-namespace DataTracker.View
+namespace DataTracker.Tags
 {
-    /// <summary>
-    /// Interaction logic for KeyboardScreen.xaml
-    /// </summary>
-    public partial class KeyboardScreen : Window
+    public class KeyEventTag
     {
-        public KeyboardScreen()
-        {
-            InitializeComponent();
-        }
+        public string KeyString { get; set; }
+        public Key KeyCode { get; set; }
+        public KeyTags KeyTag { get; set; }
+        public ScheduleTags ScheduleTag { get; set; }
+        public TimeSpan TimePressed { get; set; }
     }
 }
