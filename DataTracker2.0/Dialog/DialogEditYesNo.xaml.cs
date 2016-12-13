@@ -39,6 +39,11 @@ namespace DataTracker.Dialog
         public bool ReturnedAnswer { get; set; }
 
         /// <summary>
+        /// Clicked
+        /// </summary>
+        public bool Clicked = false;
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         public DialogEditYesNo()
@@ -53,6 +58,7 @@ namespace DataTracker.Dialog
         /// <param name="e"></param>
         private void Button_Click_Yes(object sender, RoutedEventArgs e)
         {
+            Clicked = true;
             ReturnedAnswer = false;
             DialogResult = true;
         }
@@ -64,6 +70,7 @@ namespace DataTracker.Dialog
         /// <param name="e"></param>
         private void Button_Click_No(object sender, RoutedEventArgs e)
         {
+            Clicked = true;
             ReturnedAnswer = true;
             DialogResult = true;
         }

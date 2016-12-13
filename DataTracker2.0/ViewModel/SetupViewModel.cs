@@ -467,9 +467,10 @@ namespace DataTracker.ViewModel
 
             bool editingCurrent = false;
 
+            var editDialog = new DialogEditYesNo();
+
             if (_keys != null && _keys.Length > 0)
             {
-                var editDialog = new DialogEditYesNo();
                 editDialog.QuestionText = "Do you want new keys or to edit: " + _keys;
 
                 if (editDialog.ShowDialog() == true)
@@ -478,7 +479,7 @@ namespace DataTracker.ViewModel
                 }
             }
             
-            if (editingCurrent)
+            if (editingCurrent && editDialog.Clicked)
             {
                 var mModel = new KeyboardScreenViewModel();
                 mModel.PatientName = _indiv;
@@ -506,7 +507,7 @@ namespace DataTracker.ViewModel
                     keyboardListViewModel.RefreshRepository(_group, _indiv);
                 }
             }
-            else
+            else if (!editingCurrent && editDialog.Clicked)
             {
                 var dialog = new Dialog.Dialog();
                 dialog.Title = "Add New Key Set";
