@@ -292,7 +292,8 @@
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.View>
-                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}"
+                          AllowsColumnReorder="False">
                     <GridViewColumn Header="Key (Frequency)" 
                             HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
                             Width="100" 
@@ -341,7 +342,8 @@
 
             </ListView.Resources>
             <ListView.View>
-                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}"
+                          AllowsColumnReorder="False">
                     <GridViewColumn Header="Key (Duration)" 
                                 HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
                                 Width="100" 
@@ -762,7 +764,8 @@
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.View>
-                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}"
+                          AllowsColumnReorder="False">
                     <GridViewColumn Header="Code " 
                                     HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
                                     Width="100" 

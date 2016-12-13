@@ -34,105 +34,6 @@
         WindowStartupLocation="CenterOwner"
         Style="{DynamicResource BackgroundStyle}">
 
-    <Window.Resources>
-        <Style TargetType="{x:Type GridViewColumnHeader}" x:Key="MyHeaderStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
-                        <Border BorderThickness="0,0,0,1" BorderBrush="Transparent" Background="Transparent">
-                            <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="5,5,5,0" Width="{TemplateBinding Width}" TextAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Width" Value="Auto" />
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource LightGrayTextContrast}" />
-        </Style>
-
-        <Style x:Key="GridViewColumnHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Template" Value="{DynamicResource GridViewColumnHeaderControlTemplate1}"/>
-        </Style>
-
-        <ControlTemplate x:Key="GridViewColumnHeaderControlTemplate1" TargetType="{x:Type GridViewColumnHeader}">
-            <Grid SnapsToDevicePixels="True">
-                <Border x:Name="HeaderBorder" BorderBrush="Transparent" BorderThickness="0,1" Background="{TemplateBinding Background}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition MaxHeight="7"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-
-                        <Rectangle x:Name="UpperHighlight" Fill="#FFE3F7FF" Visibility="Collapsed"/>
-                        <Border Padding="{TemplateBinding Padding}" Grid.RowSpan="2">
-                            <ContentPresenter x:Name="HeaderContent" 
-                                              ContentTemplate="{TemplateBinding ContentTemplate}" 
-                                              Content="{TemplateBinding Content}" 
-                                              ContentStringFormat="{TemplateBinding ContentStringFormat}" 
-                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                              Margin="0,0,0,0" 
-                                              RecognizesAccessKey="True" 
-                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                    </Grid>
-                </Border>
-                <Border x:Name="HeaderHoverBorder" BorderThickness="0,0,0,0" Margin="0,0,0,0"/>
-                <Border x:Name="HeaderPressBorder" BorderThickness="0,0,0,0" Margin="0,0,0,0"/>
-                <Canvas>
-                    <Thumb x:Name="PART_HeaderGripper">
-                        <Thumb.Style>
-                            <Style TargetType="{x:Type Thumb}">
-                                <Setter Property="Canvas.Right" Value="-9"/>
-                                <Setter Property="Width" Value="18"/>
-                                <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="BorderBrush" Value="Transparent"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type Thumb}">
-                                            <Border Background="Transparent">
-                                                <Rectangle Fill="Transparent" HorizontalAlignment="Center" Width="0"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Thumb.Style>
-                    </Thumb>
-                </Canvas>
-            </Grid>
-            
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" TargetName="HeaderBorder" Value="Transparent"/>
-                    <Setter Property="BorderBrush" TargetName="HeaderHoverBorder" Value="#FF88CBEB"/>
-                    <Setter Property="Visibility" TargetName="UpperHighlight" Value="Visible"/>
-                    <Setter Property="Background" TargetName="PART_HeaderGripper" Value="Transparent"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" TargetName="HeaderBorder" Value="Transparent"/>
-                    <Setter Property="BorderBrush" TargetName="HeaderHoverBorder" Value="Transparent"/>
-                    <Setter Property="BorderBrush" TargetName="HeaderPressBorder" Value="Transparent"/>
-                    <Setter Property="Visibility" TargetName="UpperHighlight" Value="Visible"/>
-                    <Setter Property="Fill" TargetName="UpperHighlight" Value="Transparent"/>
-                    <Setter Property="Visibility" TargetName="PART_HeaderGripper" Value="Hidden"/>
-                    <Setter Property="Margin" TargetName="HeaderContent" Value="0,0,0,0"/>
-                </Trigger>
-                <Trigger Property="Height" Value="Auto">
-                    <Setter Property="MinHeight" Value="20"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="Transparent"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-    </Window.Resources>
-
     <Grid>
         <Grid.RowDefinitions >
             <RowDefinition Height="*"/>
@@ -177,7 +78,8 @@
                   HorizontalAlignment="Stretch">
 
             <ListView.View>
-                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}"
+                          AllowsColumnReorder="False">
                     <GridViewColumn Header="Key (Frequency)"
                                     HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
                                     Width="150" 
@@ -210,10 +112,10 @@
                   SelectedItem="{Binding SelectedDurationString}"
                   Background="Transparent"
                   HorizontalAlignment="Stretch" >
-            
-            
+
             <ListView.View>
-                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}"
+                          AllowsColumnReorder="False">
                     <GridViewColumn Header="Key (Duration)" 
                                     HeaderContainerStyle="{DynamicResource MyHeaderStyle}"
                                     Width="150" 
@@ -234,9 +136,7 @@
 
         <Button x:Name="frequencyAdd" 
                 Content="Add Frequency Key" 
-                HorizontalAlignment="Stretch" 
                 Margin="10,20,10,20" 
-                VerticalAlignment="Stretch" 
                 Grid.Column="0" 
                 Grid.Row="5" 
                 Grid.ColumnSpan="2" 
@@ -245,9 +145,7 @@
         
         <Button x:Name="frequencyRemove" 
                 Content="Remove Frequency Key" 
-                HorizontalAlignment="Stretch" 
                 Margin="10,20,10,20" 
-                VerticalAlignment="Stretch" 
                 Grid.Column="0" 
                 Grid.Row="6" 
                 Grid.ColumnSpan="2" 
@@ -256,9 +154,7 @@
                 
         <Button x:Name="durationAdd" 
                 Content="Add Duration Key" 
-                HorizontalAlignment="Stretch" 
                 Margin="10,20,10,20" 
-                VerticalAlignment="Stretch" 
                 Grid.Column="2" 
                 Grid.Row="5" 
                 Grid.ColumnSpan="2" 
@@ -267,9 +163,7 @@
         
         <Button x:Name="durationRemove" 
                 Content="Remove Duration Key" 
-                HorizontalAlignment="Stretch" 
                 Margin="10,20,10,20" 
-                VerticalAlignment="Stretch" 
                 Grid.Column="2" 
                 Grid.Row="6" 
                 Grid.ColumnSpan="2" 
@@ -278,9 +172,7 @@
         
         <Button x:Name="saveButton" 
                 Content="Save" 
-                HorizontalAlignment="Stretch" 
                 Margin="10,20,10,20" 
-                VerticalAlignment="Stretch" 
                 Grid.Column="1" 
                 Grid.Row="7" 
                 Grid.ColumnSpan="2" 
