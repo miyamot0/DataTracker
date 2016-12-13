@@ -66,16 +66,18 @@
         <Label 
             Foreground="{DynamicResource LightGrayTextContrast}"
             Grid.Row="2"
-            Grid.RowSpan="3"
+            Grid.RowSpan="2"
             Grid.Column="0"
             Grid.ColumnSpan="3"
             FontSize="14"
             HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            VerticalContentAlignment="Bottom"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Stretch"
             Content="Datatracker was designed by Shawn Patrick Gilroy as part of an open-sourced project
             &#10;
+            &#10;DataTracker uses the following open-source components:
             &#10;Newtonsoft.Json - Copyright (c) 2007 James Newton-King. MIT License.
+            &#10;MIT Licensed. Copyright (c) 2000-2016 SharpZipLib Contributors
             &#10;GongSolutions.WPF.DragDrop - Copyright (c) 2015, Jan Karger (Steven Kirk). BSD-3 License.
             &#10;Neuzilla NPOI, .NET port of Apache POI - Copyright (c) 2008, Nuezillz (Tony Qu). Apache 2.0 License."/>
 
