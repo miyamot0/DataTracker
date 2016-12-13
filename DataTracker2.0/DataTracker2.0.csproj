@@ -14,7 +14,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>ftp://ehub42.webhostinghub.com/public_html/deploy/</PublishUrl>
+    <PublishUrl>ftp://ehub42.webhostinghub.com/public_html/DataTracker/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -24,14 +24,16 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.smallnstats.com/deploy/</InstallUrl>
-    <ProductName>Data Tracker 2</ProductName>
+    <InstallUrl>http://www.smallnstats.com/DataTracker/</InstallUrl>
+    <SupportUrl>http://www.smallnstats.com</SupportUrl>
+    <ErrorReportUrl>http://www.smallnstats.com</ErrorReportUrl>
+    <ProductName>DataTracker</ProductName>
     <PublisherName>Shawn Gilroy</PublisherName>
     <SuiteName>Small n Stats</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>5</ApplicationRevision>
-    <ApplicationVersion>1.0.1.%2a</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.6.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

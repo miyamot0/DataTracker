@@ -23,7 +23,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataTracker"
         mc:Ignorable="d"
-        Title="Data Tracker" 
+        Title="DataTracker" 
         Height="600" 
         Width="800" 
         ResizeMode="NoResize"
