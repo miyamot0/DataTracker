@@ -142,7 +142,6 @@ namespace DataTracker.View
 
             Title.Content = titleText;
             progressBox.ItemsSource = mListItems;
-
         }
 
         /// <summary>
@@ -438,93 +437,8 @@ namespace DataTracker.View
                         tempdurationIntervalsSchThree[mInt] = 0;
                     }
 
-                    /*
-
-                    hssfworkbook = new XSSFWorkbook();
-
-                    var kbWindow = new ResultsWindow();
-
-                    kbWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
-                    kbWindow.mFrequencyColumns = GetFrequencyKeys();
-                    kbWindow.mDurationColumns = GetDurationKeys();
-
-                    kbWindow.mainFreqCounts = GetMainFrequencyCounts();
-                    kbWindow.mainFreqMinutes = GetMainFrequencyTotals();
-                    kbWindow.mainFreqRPM = GetMainFrequencyRPM();
-
-                    kbWindow.mainDurCounts = GetMainDurationTime();
-                    kbWindow.mainDurMinutes = GetMainDurationTotalTime();
-                    kbWindow.mainDurPercent = GetMainDurationPercentageSession();
-
-                    kbWindow.schOneFreqCounts = GetSchOneFrequencyCounts();
-                    kbWindow.schOneFreqMinutes = GetSchOneFrequencyTotals();
-                    kbWindow.schOneFreqRPM = GetSchOneFrequencyRPM();
-
-                    kbWindow.schOneDurCounts = GetSchOneDurationTime();
-                    kbWindow.schOneDurMinutes = GetSchOneDurationTotalTime();
-                    kbWindow.schOneDurPercent = GetSchOneDurationPercentageSession();
-
-                    kbWindow.schTwoFreqCounts = GetSchTwoFrequencyCounts();
-                    kbWindow.schTwoFreqMinutes = GetSchTwoFrequencyTotals();
-                    kbWindow.schTwoFreqRPM = GetSchTwoFrequencyRPM();
-
-                    kbWindow.schTwoDurCounts = GetSchTwoDurationTime();
-                    kbWindow.schTwoDurMinutes = GetSchTwoDurationTotalTime();
-                    kbWindow.schTwoDurPercent = GetSchTwoDurationPercentageSession();
-
-                    kbWindow.schThreeFreqCounts = GetSchThreeFrequencyCounts();
-                    kbWindow.schThreeFreqMinutes = GetSchThreeFrequencyTotals();
-                    kbWindow.schThreeFreqRPM = GetSchThreeFrequencyRPM();
-
-                    kbWindow.schThreeDurCounts = GetSchThreeDurationTime();
-                    kbWindow.schThreeDurMinutes = GetSchThreeDurationTotalTime();
-                    kbWindow.schThreeDurPercent = GetSchThreeDurationPercentageSession();
-
-                    
-
-                    if (kbWindow.ShowDialog() == true)
-                    {
-                        if (kbWindow.SaveData)
-                        {
-                            try
-                            {
-                                ISheet page = hssfworkbook.CreateSheet("Cover Page");
-                                WriteResults(page, freqIntervalListMain, stopWatch, durationIntervalListMain, mMultiScheds[0], true, 0);
-                                page = hssfworkbook.CreateSheet("Schedule 1 Only");
-                                WriteResults(page, freqIntervalListSchOne, scheduleOne, durationIntervalListSchOne, mMultiScheds[1], false, 1);
-                                page = hssfworkbook.CreateSheet("Schedule 2 Only");
-                                WriteResults(page, freqIntervalListSchTwo, scheduleTwo, durationIntervalListSchTwo, mMultiScheds[2], false, 2);
-                                page = hssfworkbook.CreateSheet("Schedule 3 Only");
-                                WriteResults(page, freqIntervalListSchThree, scheduleThree, durationIntervalListSchThree, mMultiScheds[3], false, 3);
-
-                                page = hssfworkbook.CreateSheet("FrequencyIntervals");
-                                WriteFreqIntervalResults(page, keyFrequency, mKeyboards.frequencyKeys, freqIntervalListMain);
-
-                                page = hssfworkbook.CreateSheet("DurationIntervals");
-                                WriteDurIntervalResults(page, keyDuration, mKeyboards.durationKeys, durationIntervalListMain);
-
-                                var targetFile = Path.Combine(Properties.Settings.Default.SaveLocation, GroupName, PatientName, EvaluationName, ConditionName, "Session_" + SessionCount + "_" + CollectorRole + ".xlsx");
-
-                                using (FileStream file = new FileStream(targetFile, FileMode.Create))
-                                {
-                                    hssfworkbook.Write(file);
-                                }
-
-                            }
-                            catch (IOException e2)
-                            {
-                                Console.WriteLine(e2.ToString());
-                            }
-                        }
-                    }
-
-                    kbWindow.Close();
-
-                    */
-
                     DialogResult = true;
-//                    Close();
+
                     }
                 }
             }
@@ -540,7 +454,9 @@ namespace DataTracker.View
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void dt_Tick(object sender, EventArgs e)
-        {            
+        {
+            #region Ticks
+
             // Frequency interval trips
             if (!freqSchedOneWasActive && scheduleOne.IsRunning)
             {
@@ -572,7 +488,11 @@ namespace DataTracker.View
             {
                 durSchedThreeWasActive = true;
             }
-            
+
+            #endregion
+
+            #region Timer Ticks
+
             if (scheduleOne.IsRunning)
             {
                 for (int counter = 0; counter < mMultiScheds[0].mKeyModels.Length; counter++)
@@ -604,13 +524,79 @@ namespace DataTracker.View
                 }
             }
 
+            if (scheduleTwo.IsRunning)
+            {
+                for (int counter = 0; counter < mMultiScheds[0].mKeyModels.Length; counter++)
+                {
+                    mMultiScheds[0].mKeyModels[counter].WasObserved = true;
+                    mMultiScheds[2].mKeyModels[counter].WasObserved = true;
+
+                    if (mKeyboards.durationKeys.ElementAt(counter).isRunning)
+                    {
+                        mMultiScheds[0].mKeyModels[counter].WasActive = true;
+
+                        mMultiScheds[2].mKeyModels[counter].Recording = true;
+                        mMultiScheds[2].mKeyModels[counter].WasActive = true;
+                        mMultiScheds[2].mKeyModels[counter].Timer.Start();
+
+                        mMultiScheds[1].mKeyModels[counter].Recording = false;
+                        mMultiScheds[1].mKeyModels[counter].Timer.Stop();
+                        mMultiScheds[3].mKeyModels[counter].Recording = false;
+                        mMultiScheds[3].mKeyModels[counter].Timer.Stop();
+                    }
+                    else
+                    {
+                        mMultiScheds[0].mKeyModels[counter].Timer.Stop();
+
+                        mMultiScheds[2].mKeyModels[counter].Recording = false;
+                        mMultiScheds[2].mKeyModels[counter].Timer.Stop();
+                    }
+                }
+            }
+
+            if (scheduleThree.IsRunning)
+            {
+                for (int counter = 0; counter < mMultiScheds[0].mKeyModels.Length; counter++)
+                {
+                    mMultiScheds[0].mKeyModels[counter].WasObserved = true;
+                    mMultiScheds[3].mKeyModels[counter].WasObserved = true;
+
+                    if (mKeyboards.durationKeys.ElementAt(counter).isRunning)
+                    {
+                        mMultiScheds[0].mKeyModels[counter].WasActive = true;
+
+                        mMultiScheds[3].mKeyModels[counter].Recording = true;
+                        mMultiScheds[3].mKeyModels[counter].WasActive = true;
+                        mMultiScheds[3].mKeyModels[counter].Timer.Start();
+
+                        mMultiScheds[1].mKeyModels[counter].Recording = false;
+                        mMultiScheds[1].mKeyModels[counter].Timer.Stop();
+                        mMultiScheds[2].mKeyModels[counter].Recording = false;
+                        mMultiScheds[2].mKeyModels[counter].Timer.Stop();
+                    }
+                    else
+                    {
+                        mMultiScheds[0].mKeyModels[counter].Timer.Stop();
+
+                        mMultiScheds[3].mKeyModels[counter].Recording = false;
+                        mMultiScheds[3].mKeyModels[counter].Timer.Stop();
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Log intervals
+
             // TODO Intervals logged here
-            if (tenSecondIntervalWatch.IsRunning && tenSecondIntervalWatch.Elapsed.Seconds >= 10.01)
+            if (tenSecondIntervalWatch.IsRunning && tenSecondIntervalWatch.Elapsed.Seconds >= 10)
             {
                 // Main Freq Count Array
                 int[] mCopyTempMainSchedule = new int[tempFreqIntervalsMain.Length];
                 Array.Copy(tempFreqIntervalsMain, mCopyTempMainSchedule, tempFreqIntervalsMain.Length);
                 freqIntervalListMain.Add(mCopyTempMainSchedule);
+
+                Console.WriteLine("freq: " + string.Join("\t", mCopyTempMainSchedule));
 
                 // Individial Freq Count Arrays
                 if (freqSchedOneWasActive)
@@ -641,8 +627,7 @@ namespace DataTracker.View
                     tempFreqIntervalsSchOne[mInt] = 0;
                     tempFreqIntervalsSchTwo[mInt] = 0;
                     tempFreqIntervalsSchThree[mInt] = 0;
-                }
-                
+                }                
 
                 // END FREQUENCY LOG
 
@@ -738,6 +723,9 @@ namespace DataTracker.View
 
                 double[] mCopyTempDurSchedule = new double[tempdurationIntervalsMain.Length];
                 Array.Copy(tempdurationIntervalsMain, mCopyTempDurSchedule, tempdurationIntervalsMain.Length);
+
+                Console.WriteLine("dur: " + string.Join("\t", tempdurationIntervalsMain));
+
                 durationIntervalListMain.Add(mCopyTempDurSchedule);
 
                 if (durSchedOneWasActive)
@@ -774,65 +762,7 @@ namespace DataTracker.View
                 tenSecondIntervalWatch.Restart();
             }
 
-            if (scheduleTwo.IsRunning)
-            {
-                for (int counter = 0; counter < mMultiScheds[0].mKeyModels.Length; counter++)
-                {
-                    mMultiScheds[0].mKeyModels[counter].WasObserved = true;
-                    mMultiScheds[2].mKeyModels[counter].WasObserved = true;
-
-                    if (mKeyboards.durationKeys.ElementAt(counter).isRunning)
-                    {
-                        mMultiScheds[0].mKeyModels[counter].WasActive = true;
-
-                        mMultiScheds[2].mKeyModels[counter].Recording = true;
-                        mMultiScheds[2].mKeyModels[counter].WasActive = true;
-                        mMultiScheds[2].mKeyModels[counter].Timer.Start();
-
-                        mMultiScheds[1].mKeyModels[counter].Recording = false;
-                        mMultiScheds[1].mKeyModels[counter].Timer.Stop();
-                        mMultiScheds[3].mKeyModels[counter].Recording = false;
-                        mMultiScheds[3].mKeyModels[counter].Timer.Stop();
-                    }
-                    else
-                    {
-                        mMultiScheds[0].mKeyModels[counter].Timer.Stop();
-
-                        mMultiScheds[2].mKeyModels[counter].Recording = false;
-                        mMultiScheds[2].mKeyModels[counter].Timer.Stop();
-                    }
-                }
-            }
-
-            if (scheduleThree.IsRunning)
-            {
-                for (int counter = 0; counter < mMultiScheds[0].mKeyModels.Length; counter++)
-                {
-                    mMultiScheds[0].mKeyModels[counter].WasObserved = true;
-                    mMultiScheds[3].mKeyModels[counter].WasObserved = true;
-
-                    if (mKeyboards.durationKeys.ElementAt(counter).isRunning)
-                    {
-                        mMultiScheds[0].mKeyModels[counter].WasActive = true;
-
-                        mMultiScheds[3].mKeyModels[counter].Recording = true;
-                        mMultiScheds[3].mKeyModels[counter].WasActive = true;
-                        mMultiScheds[3].mKeyModels[counter].Timer.Start();
-
-                        mMultiScheds[1].mKeyModels[counter].Recording = false;
-                        mMultiScheds[1].mKeyModels[counter].Timer.Stop();
-                        mMultiScheds[2].mKeyModels[counter].Recording = false;
-                        mMultiScheds[2].mKeyModels[counter].Timer.Stop();
-                    }
-                    else
-                    {
-                        mMultiScheds[0].mKeyModels[counter].Timer.Stop();
-
-                        mMultiScheds[3].mKeyModels[counter].Recording = false;
-                        mMultiScheds[3].mKeyModels[counter].Timer.Stop();
-                    }
-                }
-            }
+            #endregion
 
             if (stopWatch.IsRunning)
             {
@@ -855,10 +785,14 @@ namespace DataTracker.View
                     scheduleThreeTime = string.Format("{0:00}:{1:00}.{2:00}", tsSchedThree.Minutes, tsSchedThree.Seconds, tsSchedThree.Milliseconds / 10);
                     SessionTimeTextSchedThree.Content = scheduleThreeTime;
                 }
-
-                if (ts.TotalSeconds >= (SessionTime*60) + 0.01)
+                else 
                 {
                     stopWatch.Stop();
+                    tenSecondIntervalWatch.Stop();
+
+                    bool schedOneEnded = false,
+                         schedTwoEnded = false,
+                         schedThreeEnded = false;
 
                     if (scheduleOne.IsRunning)
                     {
@@ -872,6 +806,7 @@ namespace DataTracker.View
                         mAdd.TimePressed = stopWatch.Elapsed;
                         mListItems.Add(mAdd);
                         scheduleOne.Stop();
+                        schedOneEnded = true;
                     }
                     else if (scheduleTwo.IsRunning)
                     {
@@ -885,6 +820,7 @@ namespace DataTracker.View
                         mAdd.TimePressed = stopWatch.Elapsed;
                         mListItems.Add(mAdd);
                         scheduleTwo.Stop();
+                        schedTwoEnded = true;
                     }
                     else if (scheduleThree.IsRunning)
                     {
@@ -898,6 +834,7 @@ namespace DataTracker.View
                         mAdd.TimePressed = stopWatch.Elapsed;
                         mListItems.Add(mAdd);
                         scheduleThree.Stop();
+                        schedThreeEnded = true;
                     }
 
                     for (int cnt = 0; cnt < mMultiScheds[0].mKeyModels.Length; cnt++)
@@ -1009,22 +946,22 @@ namespace DataTracker.View
 
                     for (int mCounter = 0; mCounter < tempdurationIntervalsMain.Length; mCounter++)
                     {
-                        if (tempdurationIntervalsMain[mCounter] == 0 && mMultiScheds[0].mKeyModels[mCounter].Recording && scheduleOne.IsRunning)
+                        if (tempdurationIntervalsMain[mCounter] == 0 && mMultiScheds[0].mKeyModels[mCounter].Recording)
                         {
                             tempdurationIntervalsMain[mCounter] = mMultiScheds[0].mKeyModels[mCounter].Timer.Elapsed.TotalSeconds - durationHolder[mCounter];
                         }
 
-                        if (tempdurationIntervalsSchOne[mCounter] == 0 && mMultiScheds[0].mKeyModels[mCounter].Recording && scheduleOne.IsRunning)
+                        if (tempdurationIntervalsSchOne[mCounter] == 0 && mMultiScheds[0].mKeyModels[mCounter].Recording && schedOneEnded)
                         {
                             tempdurationIntervalsSchOne[mCounter] = mMultiScheds[0].mKeyModels[mCounter].Timer.Elapsed.TotalSeconds - durationHolder[mCounter];
                         }
 
-                        if (tempdurationIntervalsSchTwo[mCounter] == 0 && mMultiScheds[0].mKeyModels[mCounter].Recording && scheduleTwo.IsRunning)
+                        if (tempdurationIntervalsSchTwo[mCounter] == 0 && mMultiScheds[0].mKeyModels[mCounter].Recording && schedTwoEnded)
                         {
                             tempdurationIntervalsSchTwo[mCounter] = mMultiScheds[0].mKeyModels[mCounter].Timer.Elapsed.TotalSeconds - durationHolder[mCounter];
                         }
 
-                        if (tempdurationIntervalsSchThree[mCounter] == 0 && mMultiScheds[0].mKeyModels[mCounter].Recording && scheduleThree.IsRunning)
+                        if (tempdurationIntervalsSchThree[mCounter] == 0 && mMultiScheds[0].mKeyModels[mCounter].Recording && schedThreeEnded)
                         {
                             tempdurationIntervalsSchThree[mCounter] = mMultiScheds[0].mKeyModels[mCounter].Timer.Elapsed.TotalSeconds - durationHolder[mCounter];
                         }
@@ -1060,117 +997,12 @@ namespace DataTracker.View
                         durationIntervalListSchThree.Add(mCopyTempMultSchedThree);
                     }
 
-                    for (int mInt = 0; mInt < tempdurationIntervalsMain.Length; mInt++)
-                    {   // set ALL duration interval counts to base 0
-                        tempdurationIntervalsMain[mInt] = 0;
-                        tempdurationIntervalsSchOne[mInt] = 0;
-                        tempdurationIntervalsSchTwo[mInt] = 0;
-                        tempdurationIntervalsSchThree[mInt] = 0;
-                    }
-
-                    /*
-                    hssfworkbook = new XSSFWorkbook();
-
-                    var kbWindow = new ResultsWindow();
-
-                    kbWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
-                    kbWindow.mFrequencyColumns = GetFrequencyKeys();
-                    kbWindow.mDurationColumns = GetDurationKeys();
-
-                    kbWindow.mainFreqCounts = GetMainFrequencyCounts();
-                    kbWindow.mainFreqMinutes = GetMainFrequencyTotals();
-                    kbWindow.mainFreqRPM = GetMainFrequencyRPM();
-
-                    kbWindow.mainDurCounts = GetMainDurationTime();
-                    kbWindow.mainDurMinutes = GetMainDurationTotalTime();
-                    kbWindow.mainDurPercent = GetMainDurationPercentageSession();
-
-                    kbWindow.schOneFreqCounts = GetSchOneFrequencyCounts();
-                    kbWindow.schOneFreqMinutes = GetSchOneFrequencyTotals();
-                    kbWindow.schOneFreqRPM = GetSchOneFrequencyRPM();
-
-                    kbWindow.schOneDurCounts = GetSchOneDurationTime();
-                    kbWindow.schOneDurMinutes = GetSchOneDurationTotalTime();
-                    kbWindow.schOneDurPercent = GetSchOneDurationPercentageSession();
-
-                    kbWindow.schTwoFreqCounts = GetSchTwoFrequencyCounts();
-                    kbWindow.schTwoFreqMinutes = GetSchTwoFrequencyTotals();
-                    kbWindow.schTwoFreqRPM = GetSchTwoFrequencyRPM();
-
-                    kbWindow.schTwoDurCounts = GetSchTwoDurationTime();
-                    kbWindow.schTwoDurMinutes = GetSchTwoDurationTotalTime();
-                    kbWindow.schTwoDurPercent = GetSchTwoDurationPercentageSession();
-
-                    kbWindow.schThreeFreqCounts = GetSchThreeFrequencyCounts();
-                    kbWindow.schThreeFreqMinutes = GetSchThreeFrequencyTotals();
-                    kbWindow.schThreeFreqRPM = GetSchThreeFrequencyRPM();
-
-                    kbWindow.schThreeDurCounts = GetSchThreeDurationTime();
-                    kbWindow.schThreeDurMinutes = GetSchThreeDurationTotalTime();
-                    kbWindow.schThreeDurPercent = GetSchThreeDurationPercentageSession();
-
-                    if (kbWindow.ShowDialog() == true)
-                    {
-                        if (kbWindow.SaveData)
-                        {
-                            try
-                            {
-                                //Sheet FrontPage
-                                ISheet page = hssfworkbook.CreateSheet("Cover Page");
-                                WriteResults(page, freqIntervalListMain, stopWatch, durationIntervalListMain, mMultiScheds[0], true, 0);
-                                page = hssfworkbook.CreateSheet("Schedule 1 Only");
-                                WriteResults(page, freqIntervalListSchOne, scheduleOne, durationIntervalListSchOne, mMultiScheds[1], false, 1);
-                                page = hssfworkbook.CreateSheet("Schedule 2 Only");
-                                WriteResults(page, freqIntervalListSchTwo, scheduleTwo, durationIntervalListSchTwo, mMultiScheds[2], false, 2);
-                                page = hssfworkbook.CreateSheet("Schedule 3 Only");
-                                WriteResults(page, freqIntervalListSchThree, scheduleThree, durationIntervalListSchThree, mMultiScheds[3], false, 3);
-
-                                page = hssfworkbook.CreateSheet("FrequencyIntervals");
-                                WriteFreqIntervalResults(page, keyFrequency, mKeyboards.frequencyKeys, freqIntervalListMain);
-
-                                page = hssfworkbook.CreateSheet("DurationIntervals");
-                                WriteDurIntervalResults(page, keyDuration, mKeyboards.durationKeys, durationIntervalListMain);
-
-                                var targetFile = Path.Combine(Properties.Settings.Default.SaveLocation, GroupName, PatientName, EvaluationName, ConditionName, "Session_" + SessionCount + "_" + CollectorRole + ".xlsx");
-
-                                using (FileStream file = new FileStream(targetFile, FileMode.Create))
-                                {
-                                    hssfworkbook.Write(file);
-                                }
-                            }
-                            catch (DirectoryNotFoundException e2)
-                            {
-                                Console.WriteLine(e2.ToString());
-                                string defaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\DataTracker\\";
-                                var targetFile = Path.Combine(defaultPath, GroupName, PatientName, EvaluationName, ConditionName, "Session_" + SessionCount + "_" + CollectorRole + ".xlsx");
-                                Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
-
-                                using (FileStream file = new FileStream(targetFile, FileMode.Create))
-                                {
-                                    hssfworkbook.Write(file);
-                                }
-
-                                MessageBox.Show("File had to be saved to the local drive.");
-                            }
-                            catch (IOException e2)
-                            {
-                                Console.WriteLine(e2.ToString());
-                            }
-                        }
-                    }
-                    */
-
-                    //DialogResult = true;
-
-                    Close();
-                    
+                    Close();                    
                 }
             }
 
             for (int counter = 0; counter < mMultiScheds[0].mKeyModels.Length; counter++)
-            {
-                
+            {                
                 if (mMultiScheds[0].mKeyModels[counter].Recording)
                 {
                     TimeSpan ts = stopWatch.Elapsed.Subtract(GetDurationTimeStampKey(counter));
@@ -1186,7 +1018,6 @@ namespace DataTracker.View
                         mMultiScheds[0].mKeyModels[counter].Timer.Reset();
                         mKeyboards.durationKeys[counter].CountString = currentTimes[counter];
                         keyDuration.Items.Refresh();
-
                     }
                 }
             }
@@ -1972,11 +1803,9 @@ namespace DataTracker.View
                 currRow2.CreateCell(2 + cnt).SetCellValue(counts);
                 currRow3.CreateCell(2 + cnt).SetCellValue(mLocalFreqList.Count);
                 currRow4.CreateCell(2 + cnt).SetCellValue(((double)((double)counts / (double)mLocalFreqList.Count) * 100).ToString("0.##"));
-
             }
-
-
-            currRow = sheetPage.CreateRow(23);
+            
+           currRow = sheetPage.CreateRow(23);
            currRow.CreateCell(0).SetCellValue("Duration Keys (Percent of Session)");
 
            currRow1 = sheetPage.CreateRow(25);
@@ -1994,14 +1823,13 @@ namespace DataTracker.View
                 if (isGlobal)
                 {
                     currRow1.CreateCell(2 + cnt).SetCellValue(mKeyboards.durationKeys[cnt].KeyName);
-
-
+                    
                     double mTime = 0.0;
                     mTime += mMultiScheds[1].mKeyModels[cnt].Timer.Elapsed.TotalSeconds;
                     mTime += mMultiScheds[2].mKeyModels[cnt].Timer.Elapsed.TotalSeconds;
                     mTime += mMultiScheds[3].mKeyModels[cnt].Timer.Elapsed.TotalSeconds;
 
-                    currRow2.CreateCell(2 + cnt).SetCellValue((mTime/60).ToString("0.##"));
+                    currRow2.CreateCell(2 + cnt).SetCellValue(mTime.ToString("0.##"));
 
                     currRow3.CreateCell(2 + cnt).SetCellValue(stopWatch.Elapsed.TotalSeconds.ToString("0.##"));
                     currRow4.CreateCell(2 + cnt).SetCellValue(((double)((mTime / 60) / stopWatch.Elapsed.TotalSeconds) * 100).ToString("0.##"));

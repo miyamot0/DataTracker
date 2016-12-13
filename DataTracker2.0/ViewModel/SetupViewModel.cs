@@ -259,6 +259,7 @@ namespace DataTracker.ViewModel
                 {
                     ISheet page = hssfworkbook.CreateSheet("Cover Page");
                     window.WriteResults(page, window.freqIntervalListMain, window.stopWatch, window.durationIntervalListMain, window.mMultiScheds[0], true, 0);
+
                     page = hssfworkbook.CreateSheet("Schedule 1 Only");
                     window.WriteResults(page, window.freqIntervalListSchOne, window.scheduleOne, window.durationIntervalListSchOne, window.mMultiScheds[1], false, 1);
                     page = hssfworkbook.CreateSheet("Schedule 2 Only");
