@@ -16,6 +16,7 @@
     along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 */
 
+using System.Reflection;
 using System.Windows;
 
 namespace DataTracker
@@ -43,6 +44,8 @@ namespace DataTracker
                 Properties.Settings.Default.UpdateSettings = false;
                 Properties.Settings.Default.Save();
             }
+
+            label.Content = "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
     }
 }
