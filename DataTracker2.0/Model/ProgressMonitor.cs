@@ -16,6 +16,7 @@
     along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 */
 
+using DataTracker.Tags;
 using System;
 using System.Windows.Input;
 
@@ -23,18 +24,15 @@ namespace DataTracker.Model
 {
     public class ProgressMonitor
     {
-        public class KeyEventTag
-        {
-        }
+        public class KeyEventTag { }
 
         public string Code { get; set; }
         public string Key { get; set; }
         public string Time { get; set; }
         public Key KeyCode { get; set; }
         public string KeyString { get; set; }
-        public View.SessionWindow.KeyTags KeyTag { get; set; }
-        public View.SessionWindow.ScheduleTags ScheduleTag { get; set; }
+        public KeyTags KeyTag { get; set; }
+        public ScheduleTags ScheduleTag { get; set; }
         public TimeSpan TimePressed { get; set; }
-
     }
 }
