@@ -273,7 +273,6 @@ namespace DataTracker.ViewModel
         /// </summary>
         public void RunReliability()
         {
-
             if (SelectedGroup.GroupName == null || SelectedIndividual.IndividualName == null || SelectedEvaluation.EvaluationName == null)
                 return;
 
@@ -304,7 +303,70 @@ namespace DataTracker.ViewModel
                     MessageBox.Show("There have not been any collectors for reliability!");
                 }
 
-                foreach(FileIndexClass primary in mPrimaryList)
+                foreach (FileIndexClass primary in mPrimaryList)
+                {
+                    var reliMatches = mReliList.Where(r => r.SessionNumber == primary.SessionNumber && r.Condition == primary.Condition);
+
+                    if (reliMatches != null && reliMatches.Count() == 1)
+                    {
+                        var reli = reliMatches.First();
+
+                        AllReliabilityIndices.Add(new ReliabilityIndex
+                        {
+                            TitleName = "Session #" + primary.SessionNumber + " - Condition: " + primary.Condition + " (Reli)",
+                            PatientName = primary.PatientName,
+                            PatientGroup = primary.PatientGroup,
+                            DateCollected = primary.DateCollected,
+                            DataCollector = primary.DataCollector,
+                            Evaluation = primary.Evaluation,
+                            Keyboard = primary.Keyboard,
+                            Session = primary.SessionNumber,
+                            Condition = primary.Condition,
+                            Role = primary.Role,
+                            Rows = primary.Rows,
+                            FrequencyKeys = primary.FrequencyKeys,
+                            DurationKeys = primary.DurationKeys,
+                            DurationEntries = primary.DurationEntries,
+                            FrequencyTags = primary.FrequencyTags,
+                            FrequencyValues = primary.FrequencyValues,
+                            DurationValues = primary.DurationValues,
+                            ReliCollector = reli.DataCollector,
+                            ReliFrequencyValues = reli.FrequencyValues,
+                            ReliDurationValues = reli.DurationValues,
+                            HasReli = true
+                        });
+                    }
+                    else
+                    {
+                        AllReliabilityIndices.Add(new ReliabilityIndex
+                        {
+                            TitleName = "Session #" + primary.SessionNumber + " - Condition: " + primary.Condition + "",
+                            PatientName = primary.PatientName,
+                            PatientGroup = primary.PatientGroup,
+                            DateCollected = primary.DateCollected,
+                            DataCollector = primary.DataCollector,
+                            Evaluation = primary.Evaluation,
+                            Keyboard = primary.Keyboard,
+                            Session = primary.SessionNumber,
+                            Condition = primary.Condition,
+                            Role = primary.Role,
+                            Rows = primary.Rows,
+                            FrequencyKeys = primary.FrequencyKeys,
+                            DurationKeys = primary.DurationKeys,
+                            DurationEntries = primary.DurationEntries,
+                            FrequencyTags = primary.FrequencyTags,
+                            FrequencyValues = primary.FrequencyValues,
+                            DurationValues = primary.DurationValues,
+                            HasReli = false
+                        });
+                    }
+                }
+
+                AllReliabilityIndices.Sort();
+
+                /*
+
+                foreach (FileIndexClass primary in mPrimaryList)
                 {
                     foreach(FileIndexClass reli in mReliList)
                     {
@@ -364,6 +426,8 @@ namespace DataTracker.ViewModel
                         AllReliabilityIndices.Sort();
                     }
                 }
+
+                */
             }
         }
 
@@ -1152,9 +1216,6 @@ namespace DataTracker.ViewModel
         /// <param name="localList"></param>
         static void InitializeWorkbook(string path, List<FileIndexClass> localList)
         {
-            Console.WriteLine("Path " + path);
-
-
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 hssfworkbook = new XSSFWorkbook(file);
