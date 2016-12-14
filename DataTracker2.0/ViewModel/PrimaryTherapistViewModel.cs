@@ -22,23 +22,22 @@ using DataTracker.Utilities;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Input;
 
 namespace DataTracker.ViewModel
 {
     class PrimaryTherapistViewModel : ViewModelBase
     {
+        public InterfaceSetup mInt;
+
         public TherapistRepository _therapistRepository;
         private ObservableCollection<Therapist> _therapistList;
 
-        string _therapist;
-
-        public InterfaceSetup mInt;
+        Therapist _therapist;
 
         /// <summary>
         /// Selected therapist
         /// </summary>
-        public string TherapistSelection
+        public Therapist TherapistSelection
         {
             get { return _therapist; }
 
@@ -48,7 +47,7 @@ namespace DataTracker.ViewModel
                 OnPropertyChanged("TherapistSelection");
 
                 if (value != null)
-                    mInt.TherapistChangeInterfaceMethod(value);
+                    mInt.TherapistChangeInterfaceMethod(value.TherapistsName);
             }
         }
 

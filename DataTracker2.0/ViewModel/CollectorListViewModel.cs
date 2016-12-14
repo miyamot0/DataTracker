@@ -31,8 +31,8 @@ namespace DataTracker.ViewModel
 
         public CollectorRepository _collectorRepository;
 
-        private string _collector;
-        public string CollectorSelection
+        private Collector _collector;
+        public Collector CollectorSelection
         {
             get { return _collector; }
             set
@@ -41,7 +41,7 @@ namespace DataTracker.ViewModel
                 OnPropertyChanged("CollectorSelection");
 
                 if (value != null)
-                    mInt.CollectorChangeInterfaceMethod(value);
+                    mInt.CollectorChangeInterfaceMethod(value.CollectorsName);
             }
         }
 

@@ -46,5 +46,17 @@ namespace DataTracker.Properties {
                 this["UpdateSettings"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RestoreSelection {
+            get {
+                return ((bool)(this["RestoreSelection"]));
+            }
+            set {
+                this["RestoreSelection"] = value;
+            }
+        }
     }
 }

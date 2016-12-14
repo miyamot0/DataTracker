@@ -80,6 +80,35 @@
                  VerticalAlignment="Center" 
                  VerticalContentAlignment="Center" 
                  IsEnabled="False" />
+
+        <Label x:Name="restoreLabel"
+               Content="Restore Settings on Startup?"
+               Grid.Column="1"
+               Grid.Row="3"
+               HorizontalAlignment="Center"
+               HorizontalContentAlignment="Center"
+               VerticalAlignment="Center"
+               VerticalContentAlignment="Center" 
+               FontSize="16" 
+               Style="{DynamicResource BaseTextTitleStyle}">            
+        </Label>
+
+        <CheckBox x:Name="restoreCheckBox"
+                  Content="Restore last used settings on startup"
+                  Foreground="{DynamicResource LightGrayTextContrast}"
+                  IsChecked="{Binding Path=RestoreSettings, UpdateSourceTrigger=PropertyChanged}"
+                  FontSize="16" 
+                  HorizontalAlignment="Left"
+                  HorizontalContentAlignment="Left"
+                  VerticalAlignment="Center"
+                  VerticalContentAlignment="Center"   
+                  Margin="10,10,10,10"                 
+                  Grid.Column="2"
+                  Grid.ColumnSpan="2"
+                  Grid.Row="3">
+            
+        </CheckBox>
+                  
                
         <Button x:Name="buttonSave" 
                 Content="Save Settings" 

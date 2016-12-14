@@ -101,7 +101,7 @@
                   IsEditable="False"
                   DataContext="{Binding groupListViewModel}"
                   ItemsSource="{Binding AllGroups}"
-                  SelectedValue="{Binding GroupSelection}"
+                  SelectedValue="{Binding GroupSelection, Mode=TwoWay}"
                   IsSynchronizedWithCurrentItem="True"
                   DisplayMemberPath="GroupName">
 
@@ -274,9 +274,9 @@
                   DataContext="{Binding therapistListViewModel}"
                   ItemsSource="{Binding AllTherapists}"
                   SelectedValue="{Binding TherapistSelection}"
-                  SelectedValuePath="TherapistsName"
+                  IsSynchronizedWithCurrentItem="True"
                   DisplayMemberPath="TherapistsName"/>
-        
+
         <Button x:Name="buttonTherapist" 
                 Content="New Therapist" 
                 Margin="{StaticResource MarginResourceButton}"
@@ -309,7 +309,6 @@
                   ItemsSource="{Binding AllCollectors}"
                   SelectedValue="{Binding CollectorSelection}"
                   IsSynchronizedWithCurrentItem="True"
-                  SelectedValuePath="CollectorsName"
                   DisplayMemberPath="CollectorsName"/>
 
         <Button x:Name="buttonCollector" 

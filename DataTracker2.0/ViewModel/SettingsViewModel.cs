@@ -26,11 +26,23 @@ namespace DataTracker.ViewModel
         public RelayCommand SettingsSaveLocationDialog { get; set; }
         public RelayCommand SettingsCloseWindow { get; set; }
 
-        private string mMessage = Properties.Settings.Default.SaveLocation;
+        private bool mRestore = Properties.Settings.Default.RestoreSelection;
+        public bool RestoreSettings
+        {
+            get { return mRestore; }
+            set
+            {
+                mRestore = value;
+                OnPropertyChanged("RestoreSettings");
+                Properties.Settings.Default.RestoreSelection = mRestore;
+                Properties.Settings.Default.Save();
+            }
+        }
 
         /// <summary>
         /// Save location
         /// </summary>
+        private string mMessage = Properties.Settings.Default.SaveLocation;
         public string SaveLocation {
             get { return mMessage; }
             set

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -45,7 +46,7 @@ namespace DataTracker.ViewModel
             _keys, 
             _collect, 
             _ther;
-
+        
         public RelayCommand CloseSetupWindow { get; set; }
         public RelayCommand SetupWindowFired { get; set; }
         public RelayCommand AddGroupWindow { get; set; }
@@ -157,6 +158,95 @@ namespace DataTracker.ViewModel
 
             therapistListViewModel = new PrimaryTherapistViewModel();
             therapistListViewModel.mInt = this;
+
+            bool mRestore = Properties.Settings.Default.RestoreSelection;
+
+            #region Restore Settings Options
+
+            if (mRestore)
+            {
+                string path = Path.Combine(Properties.Settings.Default.SaveLocation, "SavedState.json");
+
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        var json = File.ReadAllText(path);
+                        var mSavedState = JsonConvert.DeserializeObject<SavedState>(json);
+
+                        Group mGroup = groupListViewModel.AllGroups.Where(g => g.GroupName == mSavedState.Group).First();
+
+                        if (mGroup != null)
+                        {
+                            groupListViewModel.GroupSelection = mGroup;
+                            Individual mIndividual = individualListViewModel.AllIndividuals.Where(i => i.IndividualName == mSavedState.Individual).First();
+
+                            if (mIndividual != null)
+                            {
+                                individualListViewModel.IndividualSelection = mIndividual;
+                                Evaluation mEvaluation = evaluationListViewModel.AllEvaluations.Where(e => e.EvaluationName == mSavedState.Evaluation).First();
+
+                                if (mEvaluation != null)
+                                {
+                                    evaluationListViewModel.EvaluationSelection = mEvaluation;
+                                    Model.Condition mCondition = conditionListViewModel.AllConditions.Where(c => c.ConditionName == mSavedState.Condition).First();
+
+                                    if (mCondition != null)
+                                    {
+                                        conditionListViewModel.ConditionSelection = mCondition;
+                                        KeyboardStorage mKeySet = keyboardListViewModel.AllKeyboards.Where(k => k.name == mSavedState.KeySet).First();
+
+                                        if (mKeySet != null)
+                                        {
+                                            keyboardListViewModel.keyboardSelection = mKeySet;
+                                            Therapist mTherapist = therapistListViewModel.AllTherapists.Where(t => t.TherapistsName == mSavedState.Therapist).First();
+
+                                            if (mTherapist != null)
+                                            {
+                                                therapistListViewModel.TherapistSelection = mTherapist;
+                                                Collector mCollector = collectorListViewModel.AllCollectors.Where(c => c.CollectorsName == mSavedState.DataCollector).First();
+
+                                                if (mCollector != null)
+                                                {
+                                                    collectorListViewModel.CollectorSelection = mCollector;
+
+                                                    if (mSavedState.Role != null && (mSavedState.Role == "Primary" || mSavedState.Role == "Reliability"))
+                                                    {
+                                                        SelectedDataRole = mSavedState.Role;
+
+                                                        if (mSavedState.Duration != null && 
+                                                            (mSavedState.Duration == "1 Minute") ||
+                                                            (mSavedState.Duration == "5 Minutes") ||
+                                                            (mSavedState.Duration == "10 Minutes") ||
+                                                            (mSavedState.Duration == "15 Minutes") ||
+                                                            (mSavedState.Duration == "20 Minutes") ||
+                                                            (mSavedState.Duration == "25 Minutes") ||
+                                                            (mSavedState.Duration == "30 Minutes") ||
+                                                            (mSavedState.Duration == "60 Minutes"))
+                                                        {
+                                                            SelectedTime = mSavedState.Duration;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("e: " + e.ToString());
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Doesn't exist");
+                }
+            }
+
+            #endregion 
         }
 
         /// <summary>
@@ -192,6 +282,25 @@ namespace DataTracker.ViewModel
             {
                 return;
             }
+
+            try
+            {
+                string savedStatePath = Path.Combine(Properties.Settings.Default.SaveLocation, "SavedState.json");
+                var savedState = new SavedState();
+                savedState.Group = _group;
+                savedState.Individual = _indiv;
+                savedState.Evaluation = _eval;
+                savedState.Condition = _cond;
+                savedState.KeySet = _keys;
+                savedState.Therapist = _ther;
+                savedState.DataCollector = _collect;
+                savedState.Role = _dataRole;
+                savedState.Duration = _sessionTime;
+
+                string json = JsonConvert.SerializeObject(savedState);
+                File.WriteAllText(savedStatePath, json);
+            }
+            catch { }
 
             var window = new SessionWindow("Recording Session: Session #" + SessionNumber);
             window.GroupName = _group;
@@ -342,6 +451,8 @@ namespace DataTracker.ViewModel
                 return int.Parse(mArray[0]);
             }
         }
+
+        #region Dialogs
 
         /// <summary>
         /// Open group window
@@ -620,6 +731,8 @@ namespace DataTracker.ViewModel
 
         }
 
+        #endregion
+
         /// <summary>
         /// Interface method
         /// </summary>
@@ -797,5 +910,6 @@ namespace DataTracker.ViewModel
                 }
             }
         }
+
     }
 }
