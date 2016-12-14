@@ -16,6 +16,7 @@
     along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 */
 
+using DataTracker.View;
 using DataTracker.ViewModel;
 using System.Windows;
 

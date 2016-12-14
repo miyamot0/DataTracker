@@ -16,7 +16,7 @@
     along with DataTracker.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -->
     
-<Window x:Class="DataTracker.MainWindow"
+<Window x:Class="DataTracker.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

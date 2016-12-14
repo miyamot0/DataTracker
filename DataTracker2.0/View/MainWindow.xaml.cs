@@ -19,7 +19,7 @@
 using System.Reflection;
 using System.Windows;
 
-namespace DataTracker
+namespace DataTracker.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
