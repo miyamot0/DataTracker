@@ -1,4 +1,4 @@
-# Fast Talker
+# DataTracker
 DataTracker is a free, electronic data collection system designed for use by behavioral consultants and researchers.
 
 Features include:
@@ -16,7 +16,7 @@ Features include:
  * 1.0.0.0 - Initial push
  
 ### Referenced Works (Packages)
-Fast Talker uses a number of open source projects to work properly:
+DataTracker uses a number of open source projects to work properly:
 * [NPOI](http://npoi.codeplex.com/) - Apache License 2.0 - Copyright (c) 2016 Neuzilla
 * [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) - MIT Licensed. Copyright (c) 2000-2016 SharpZipLib Contributors
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) - MIT Licensed. Copyright (c) 2007 James Newton-King 
