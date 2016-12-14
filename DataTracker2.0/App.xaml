@@ -25,7 +25,7 @@
             
             <!-- Default Windows Background -->
             <Style x:Key="BackgroundStyle" TargetType="Window">
-                <Setter Property="Background" Value="#4E5660" />
+                <Setter Property="Background" Value="#363E3B" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
 
@@ -75,7 +75,7 @@
                 <Setter Property="FontSize" Value="16"/>
                 <Setter Property="BorderBrush" Value="#cccccc"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="Foreground" Value="#5F666F"/>
+                <Setter Property="Foreground" Value="#363E3B"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>

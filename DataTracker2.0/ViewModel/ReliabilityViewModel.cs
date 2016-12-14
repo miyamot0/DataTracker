@@ -308,7 +308,8 @@ namespace DataTracker.ViewModel
                 {
                     foreach(FileIndexClass reli in mReliList)
                     {
-                        if (primary.SessionNumber == reli.SessionNumber && primary.Condition == reli.Condition)
+                        if (primary.SessionNumber == reli.SessionNumber && 
+                            primary.Condition == reli.Condition)
                         {
                             AllReliabilityIndices.Add(new ReliabilityIndex
                             {
@@ -1151,6 +1152,9 @@ namespace DataTracker.ViewModel
         /// <param name="localList"></param>
         static void InitializeWorkbook(string path, List<FileIndexClass> localList)
         {
+            Console.WriteLine("Path " + path);
+
+
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 hssfworkbook = new XSSFWorkbook(file);
