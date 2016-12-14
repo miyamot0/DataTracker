@@ -1,5 +1,5 @@
 # DataTracker
-DataTracker is a free, electronic data collection system designed for use by behavioral consultants and researchers.
+DataTracker is a free, electronic data collection system designed for use by behavioral consultants and researchers.  It is based on earlier behavioral data collection tools (BDataPro), but has been ported to utilize WPF (DirectX rendering), asynchronous file operation  and optimized user interacing.
 
 Features include:
   - Data collection in terms of frequency and duration
@@ -14,7 +14,11 @@ Features include:
 ### Changelog
  * 1.0.6.1 - Brought up to speed with earlier beta
  * 1.0.0.0 - Initial push
- 
+
+### Original Work (Packages)
+DataTracker is constructed and modeled from earlier software:
+* BDataPro - Public License. Copyright (c) ?-? Christopher Bullock.
+
 ### Referenced Works (Packages)
 DataTracker uses a number of open source projects to work properly:
 * [NPOI](http://npoi.codeplex.com/) - Apache License 2.0 - Copyright (c) 2016 Neuzilla
