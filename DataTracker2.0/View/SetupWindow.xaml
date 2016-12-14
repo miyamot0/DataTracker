@@ -36,7 +36,7 @@
         <Thickness x:Key="MarginResourceButton" Left="10"  Top="5" Right="10" Bottom="5" />
     </Window.Resources>
 
-    <Grid>
+    <Grid KeyboardNavigation.TabNavigation="Cycle">
         <Grid.RowDefinitions >
             <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
@@ -559,7 +559,7 @@
                 </Grid>
             </Border>
         </DockPanel>
-        
+
         <Button x:Name="buttonClose" 
                 Content="Back" 
                 Margin="{StaticResource MarginResourceButton}"
@@ -567,15 +567,68 @@
                 Grid.Row="11" 
                 Grid.ColumnSpan="2" 
                 Style="{DynamicResource BaseButtonStyle}" 
-                Command="{Binding CloseSetupWindow}"/>
-        
+                Command="{Binding CloseSetupWindow}">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="Border" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter Content="{TemplateBinding Content}" 
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Button.IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="Border" 
+                                        Property="Background" 
+                                        Value="{DynamicResource RedButtonReadyBackground}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+        </Button>
+
         <Button x:Name="buttonStart" 
                 Content="Start Session"
                 Margin="{StaticResource MarginResourceButton}"
                 Grid.Column="3" 
                 Grid.Row="11" 
                 Grid.ColumnSpan="2" 
+                KeyboardNavigation.IsTabStop="True"
                 Style="{DynamicResource BaseButtonStyle}" 
-                Command="{Binding SetupWindowFired}"/>
+                Command="{Binding SetupWindowFired}">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Name="Border" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            Background="{TemplateBinding Background}">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                          Margin="{TemplateBinding Padding}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Button.IsFocused" 
+                                 Value="True">
+                            <Setter TargetName="Border" 
+                                    Property="Background" 
+                                    Value="{DynamicResource GreenButtonReadyBackground}" />
+                        </Trigger>
+                        <Trigger Property="Button.IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="Border" 
+                                    Property="Background" 
+                                    Value="{DynamicResource GreenButtonReadyBackground}" />                            
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </Grid>
 </Window>

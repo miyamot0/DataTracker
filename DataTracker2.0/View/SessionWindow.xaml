@@ -106,8 +106,7 @@
             Grid.RowSpan="5" 
             Background="Transparent"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            KeyboardNavigation.TabNavigation="None" 
-            Margin="20,0,20,0"
+            Margin="15,0,25,0"
             BorderBrush="Transparent"
             ItemsSource="{Binding AllFrequencies}"
             DockPanel.Dock="Left">
@@ -157,14 +156,13 @@
                 Grid.Column="3" 
                 Grid.ColumnSpan="3"              
                 Grid.RowSpan="5" 
+                Background="Transparent"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"                  
                 VerticalAlignment="Stretch"
                 VerticalContentAlignment="Top"
-                Background="Transparent"
-                KeyboardNavigation.TabNavigation="None"  
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                BorderBrush="Transparent" 
+                Margin="25,0,15,0"
+                BorderBrush="Transparent"                  
                 ItemsSource="{Binding AllDurations}"
-                Margin="20,0,20,0"
                 DockPanel.Dock="Right">
             <ListView.Resources>
                 <Style TargetType="{x:Type ListViewItem}">
@@ -181,7 +179,6 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-
             </ListView.Resources>
             <ListView.View>
                 <GridView ColumnHeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}"
@@ -204,7 +201,6 @@
                                 DisplayMemberBinding="{Binding CountString}"/>
                 </GridView>
             </ListView.View>
-
         </ListView>
 
         <Label
@@ -592,7 +588,6 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Grid.RowSpan="5"              
-                KeyboardNavigation.TabNavigation="None"  
                 Margin="25, 0, 25, 0"
                 BorderBrush="Transparent"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"

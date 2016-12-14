@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("DataTracker")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Shawn Gilroy")]
+[assembly: AssemblyCompany("Small n Stats")]
 [assembly: AssemblyProduct("DataTracker")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]

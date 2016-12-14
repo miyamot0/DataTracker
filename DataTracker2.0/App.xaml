@@ -32,6 +32,12 @@
             <!-- Default Text color -->
             <SolidColorBrush x:Key="LightGrayTextContrast">#EDEEEF</SolidColorBrush>
 
+            <!-- Green background color -->
+            <SolidColorBrush x:Key="GreenButtonReadyBackground">#61AE24</SolidColorBrush>
+
+            <!-- Grey background color -->
+            <SolidColorBrush x:Key="RedButtonReadyBackground">#E54028</SolidColorBrush>
+            
             <!-- This storyboard will make the image grow to double its size in 0.2 seconds -->
             <Storyboard x:Key="expandStoryboard">
                 <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
@@ -81,7 +87,7 @@
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
-                <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                <Setter Property="KeyboardNavigation.IsTabStop" Value="False"/>
                 <Setter Property="RenderTransform">
                     <Setter.Value>
                         <ScaleTransform ScaleX="1" ScaleY="1"/>
