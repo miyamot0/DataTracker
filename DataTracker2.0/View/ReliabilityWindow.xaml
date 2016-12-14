@@ -81,21 +81,23 @@
             </Style.Triggers>
             
         </Style>
+
+        <Style TargetType="ListViewItem">
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Blue" />
+            </Style.Resources>
+        </Style>
     </Window.Resources>
 
     <Window.InputBindings>
-        <KeyBinding Gesture="Ctrl+A" Command="{Binding SelectAll}" />
-        <KeyBinding Gesture="Ctrl+E" Command="{Binding UnselectAll}" />
+        <KeyBinding Gesture="Ctrl+A" 
+                    Command="{Binding SelectAll}" 
+                    CommandParameter="{Binding ElementName=reliListBox}"/>        
+        <KeyBinding Gesture="Ctrl+E" 
+                    Command="{Binding UnselectAll}" 
+                    CommandParameter="{Binding ElementName=reliListBox}"/>
     </Window.InputBindings>
     
-    <!--
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding Initialize}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
-    -->
-
     <Grid>
         <Grid.RowDefinitions >
             <RowDefinition Height="70"/>
@@ -217,6 +219,18 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
+
+        <Button x:Name="buttonSelectAll" 
+                Content="Select All" 
+                HorizontalAlignment="Stretch" 
+                Margin="10,20,10,10" 
+                VerticalAlignment="Stretch" 
+                Grid.Column="0" 
+                Grid.Row="7" 
+                Grid.ColumnSpan="1" 
+                Command="{Binding SelectAll}"
+                CommandParameter="{Binding ElementName=reliListBox}"
+                Style="{DynamicResource BaseButtonStyle}"/>        
         
         <Button x:Name="buttonReliability" 
                 Content="Run Reliability" 
@@ -227,6 +241,18 @@
                 Grid.Row="7" 
                 Grid.ColumnSpan="1" 
                 Command="{Binding RunReliabilityCommand}"
+                Style="{DynamicResource BaseButtonStyle}"/>
+
+        <Button x:Name="buttonDeSelectAll" 
+                Content="De-Select All" 
+                HorizontalAlignment="Stretch" 
+                Margin="10,20,10,10" 
+                VerticalAlignment="Stretch" 
+                Grid.Column="2" 
+                Grid.Row="7" 
+                Grid.ColumnSpan="1" 
+                Command="{Binding UnselectAll}"
+                CommandParameter="{Binding ElementName=reliListBox}"
                 Style="{DynamicResource BaseButtonStyle}"/>
     </Grid>
 </Window>

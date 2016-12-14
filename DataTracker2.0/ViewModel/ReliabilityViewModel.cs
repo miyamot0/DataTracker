@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace DataTracker.ViewModel
 {
@@ -39,6 +40,7 @@ namespace DataTracker.ViewModel
         public RelayCommand RunReliabilityCommand { get; set; }
         public RelayCommand SelectAll { get; set; }
         public RelayCommand UnselectAll { get; set; }
+        public RelayCommand TestSelectAll { get; set; }
 
         ObservableCollection<Group> _groups;
         public ObservableCollection<Group> AllGroups
@@ -142,8 +144,8 @@ namespace DataTracker.ViewModel
         {
             Initialize = new RelayCommand(param => UpdateGroups(), param => true);
             RunReliabilityCommand = new RelayCommand(param => CalculateReliability(), param => true);
-            SelectAll = new RelayCommand(param => SelectingAll(), param => true);
-            UnselectAll = new RelayCommand(param => DeselectingAll(), param => true);
+            SelectAll = new RelayCommand(param => SelectingAll(param), param => true);
+            UnselectAll = new RelayCommand(param => DeselectingAll(param), param => true);
 
             _groups = new ObservableCollection<Group>();
             AllGroups = new ObservableCollection<Group>();
@@ -166,26 +168,38 @@ namespace DataTracker.ViewModel
             _reliIndices = new ObservableCollection<ReliabilityIndex>();
             AllReliabilityIndices = new ObservableCollection<ReliabilityIndex>();
         }
-
+        
         /// <summary>
         /// Mark selected
         /// </summary>
-        void SelectingAll()
+        void SelectingAll(object param)
         {
             foreach (ReliabilityIndex index in _reliIndices)
             {
                 index.IsSelected = true;
+            }
+
+            var view = param as ListBox;
+            if (view != null)
+            {
+                view.Focus();
             }
         }
 
         /// <summary>
         /// Unmark selected
         /// </summary>
-        void DeselectingAll()
+        void DeselectingAll(object param)
         {
             foreach (ReliabilityIndex index in _reliIndices)
             {
                 index.IsSelected = false;
+            }
+
+            var view = param as ListBox;
+            if (view != null)
+            {
+                view.Focus();
             }
         }
 
