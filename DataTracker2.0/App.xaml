@@ -32,6 +32,9 @@
             <!-- Default Text color -->
             <SolidColorBrush x:Key="LightGrayTextContrast">#EDEEEF</SolidColorBrush>
 
+            <!-- Default Background color -->
+            <SolidColorBrush x:Key="DarkGrayContrast">#363E3B</SolidColorBrush>
+
             <!-- Green background color -->
             <SolidColorBrush x:Key="GreenButtonReadyBackground">#61AE24</SolidColorBrush>
 

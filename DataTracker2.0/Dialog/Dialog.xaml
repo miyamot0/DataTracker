@@ -55,7 +55,8 @@
         <TextBox x:Name="ResponseTextBox"  
                  Margin="10,10,10,10" 
                  Grid.Row="1" 
-                 VerticalContentAlignment="Center"/>
+                 VerticalContentAlignment="Center"
+                 Foreground="{DynamicResource DarkGrayContrast}"/>
         
         <Button Content="OK" 
                 Grid.Row="2" 

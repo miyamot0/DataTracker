@@ -74,7 +74,8 @@
                 Margin="10,10,10,10" 
                 Click="Button_Click" 
                 Style="{DynamicResource BaseButtonStyle}" 
-                Foreground="White" />
+                FontSize="12"
+                Foreground="{DynamicResource DarkGrayContrast}" />
 
         <Label x:Name="LabelDescription" 
                Content="Description" 
@@ -91,7 +92,7 @@
                  Grid.Row="2" 
                  Grid.Column="1" 
                  Grid.ColumnSpan="2" 
-                 Foreground="{DynamicResource LightGrayTextContrast}"/>
+                 Foreground="{DynamicResource DarkGrayContrast}"/>
 
         <Button Content="OK" 
                 Grid.Row="3" 
