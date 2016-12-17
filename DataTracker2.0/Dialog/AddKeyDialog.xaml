@@ -92,6 +92,8 @@
                  Grid.Row="2" 
                  Grid.Column="1" 
                  Grid.ColumnSpan="2" 
+                 VerticalContentAlignment="Center"
+                 VerticalAlignment="Stretch"
                  Foreground="{DynamicResource DarkGrayContrast}"/>
 
         <Button Content="OK" 
