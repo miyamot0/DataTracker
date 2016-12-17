@@ -590,7 +590,7 @@ namespace DataTracker.ViewModel
                     editingCurrent = editDialog.ReturnedAnswer;
                 }
             }
-            
+
             if (editingCurrent && editDialog.Clicked)
             {
                 var mModel = new KeyboardScreenViewModel();
@@ -619,7 +619,7 @@ namespace DataTracker.ViewModel
                     keyboardListViewModel.RefreshRepository(_group, _indiv);
                 }
             }
-            else if (!editingCurrent && editDialog.Clicked)
+            else if (!editingCurrent)
             {
                 var dialog = new Dialog.Dialog();
                 dialog.Title = "Add New Key Set";
